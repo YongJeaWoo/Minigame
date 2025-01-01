@@ -14,6 +14,8 @@ public abstract class DetectAttackClass : MonoBehaviour
 
     protected List<Collider2D> detectedTargets = new List<Collider2D>();
 
+    private PlayerHealth health;
+
     protected virtual void Start()
     {
         InitValue();
@@ -24,8 +26,19 @@ public abstract class DetectAttackClass : MonoBehaviour
         DetectTargets();
     }
 
+    protected virtual void InitValue()
+    {
+        health = GetComponent<PlayerHealth>();
+    }
+
     protected virtual void DetectTargets()
     {
+        if (health.GetIsDead())
+        {
+            detectedTargets.Clear();
+            return;
+        }
+
         Collider2D[] targetsInRange = Physics2D.OverlapCircleAll(transform.position + detectPos, attackRange, targetLayer);
 
         List<Collider2D> sortedTargets = new List<Collider2D>(targetsInRange);
@@ -37,7 +50,16 @@ public abstract class DetectAttackClass : MonoBehaviour
 
         for (int i = 0; i < Mathf.Min(detectedTargetCount, sortedTargets.Count); i++)
         {
-            detectedTargets.Add(sortedTargets[i]);
+            HealthParent targetHealth = sortedTargets[i].GetComponent<HealthParent>();
+            if (targetHealth != null && !targetHealth.GetIsDead())
+            {
+                detectedTargets.Add(sortedTargets[i]);
+
+                if (detectedTargets.Count >= detectedTargetCount)
+                {
+                    break;
+                }
+            }            
         }
     }
 
@@ -50,8 +72,7 @@ public abstract class DetectAttackClass : MonoBehaviour
     }
 
     protected abstract void PerformAttack();
-    protected abstract void InitValue();
-
+    
     protected void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

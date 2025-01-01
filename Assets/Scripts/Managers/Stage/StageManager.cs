@@ -13,6 +13,7 @@ public class StageManager : MonoBehaviour
     [SerializeField] private StageData currentData;
 
     private float remainingTimer;
+    private bool isStageEnd;
 
     // 나중에 제거
     [SerializeField] private TextMeshProUGUI timerText;
@@ -48,6 +49,7 @@ public class StageManager : MonoBehaviour
 
     public void StageStart()
     {
+        isStageEnd = false;
         remainingTimer = currentData.stageTimer;
         StartCoroutine(TimeLimitCoroutine());
     }
@@ -59,11 +61,23 @@ public class StageManager : MonoBehaviour
 
         while (Time.time < endTime)
         {
+            if (PlayerManager.Instance.GetPlayer().GetComponent<PlayerHealth>().GetIsDead())
+            {
+                OnPlayerDeadEnd();
+                yield break;
+            }
+
             remainingTimer = Mathf.Max(endTime - Time.time, 0);
             UpdateTimer();
             yield return null;
         }
 
+        OnTimerEnd();
+    }
+
+    private void OnPlayerDeadEnd()
+    {
+        timerText.text = $"00:00";
         OnTimerEnd();
     }
 
@@ -76,7 +90,7 @@ public class StageManager : MonoBehaviour
             timerText.color = Color.white;
         }
 
-        Debug.Log("타이머 종료");
+        isStageEnd = true;
     }
 
     private void UpdateTimer()
@@ -85,7 +99,7 @@ public class StageManager : MonoBehaviour
         {
             if (remainingTimer <= 0)
             {
-                timerText.text = "00:00";
+                timerText.text = $"00:00";
 
                 if (blinkCoroutine != null)
                 {
@@ -124,4 +138,6 @@ public class StageManager : MonoBehaviour
 
         timerText.color = Color.white;
     }
+
+    public bool GetIsStageEnd() => isStageEnd;
 }

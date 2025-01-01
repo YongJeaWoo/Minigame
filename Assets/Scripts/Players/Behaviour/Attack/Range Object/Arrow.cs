@@ -4,8 +4,12 @@ public class Arrow : MonoBehaviour, IRangeObject
 {
     private Vector2 direction;
 
+    [Header("적 레이어")]
+    [SerializeField] private LayerMask targetLayer;
     [Header("움직임 속도")]
     [SerializeField] private float moveSpeed;
+    [Header("공격력")]
+    [SerializeField] private float damaged;
 
     public void InitDirection(Vector2 attackDirection)
     {
@@ -24,6 +28,24 @@ public class Arrow : MonoBehaviour, IRangeObject
         if (direction != Vector2.zero)
         {
             transform.Translate(moveSpeed * Time.deltaTime * direction, Space.World);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        TargetContact(collision);
+    }
+
+    private void TargetContact(Collider2D collision)
+    {
+        if (LayerMask.LayerToName(collision.gameObject.layer) == "Enemy")
+        {
+            if (collision.TryGetComponent<HealthParent>(out var health))
+            {
+                health.TakeDamage(damaged);
+            }
+
+            Destroy(gameObject);
         }
     }
 }

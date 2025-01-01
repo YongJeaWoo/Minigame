@@ -8,6 +8,7 @@ public class LateralAttack : DetectAttackClass
 
     protected override void InitValue()
     {
+        base.InitValue();
         detectedTargetCount = 2;
     }
 

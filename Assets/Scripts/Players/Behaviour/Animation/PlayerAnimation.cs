@@ -1,35 +1,12 @@
-using UnityEngine;
-
-public class PlayerAnimation : MonoBehaviour
+public class PlayerAnimation : AnimationParent
 {
-    private readonly string animParaName = $"Speed";
+    private readonly string animParamName = $"Speed";
 
-    private PlayerMovement pMovement;
-    private Animator animator;
-    private SpriteRenderer spriteRenderer;
-
-    private void Awake()
+    protected override void ChangeAnimation()
     {
-        GetComponents();
-    }
+        var inputVec = movement.GetInputVector();
 
-    private void GetComponents()
-    {
-        pMovement = GetComponent<PlayerMovement>();
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
-
-    private void LateUpdate()
-    {
-        ChangeAnimationToInput();
-    }
-
-    private void ChangeAnimationToInput()
-    {
-        var inputVec = pMovement.GetInputVector();
-
-        animator.SetFloat(animParaName, inputVec.magnitude);
+        animator.SetFloat(animParamName, inputVec.magnitude);
 
         if (inputVec.x != 0)
         {
@@ -37,19 +14,5 @@ public class PlayerAnimation : MonoBehaviour
         }
 
         UpdateShadowPosition(inputVec);
-    }
-
-    private void UpdateShadowPosition(Vector2 value)
-    {
-        float offsetX = value.x == 0 ? 
-            (spriteRenderer.flipX ? -pMovement.GetShadowOffset().x : pMovement.GetShadowOffset().x) :
-            (value.x < 0 ? -pMovement.GetShadowOffset().x : pMovement.GetShadowOffset().x);
-
-        float offsetY = pMovement.GetShadowOffset().y;
-
-        Vector3 playerPos = transform.position;
-        Vector3 shadowPosition = new(playerPos.x + offsetX, playerPos.y + offsetY, playerPos.z);
-
-        transform.GetChild(0).position = shadowPosition;
     }
 }

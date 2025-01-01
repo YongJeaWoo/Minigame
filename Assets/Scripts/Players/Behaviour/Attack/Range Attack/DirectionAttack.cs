@@ -3,26 +3,27 @@ using UnityEngine;
 public class DirectionAttack : DetectAttackClass
 {
     [Header("생성할 공격용 프리팹")]
-    [SerializeField] private GameObject rangePrefab;
+    [SerializeField] protected GameObject rangePrefab;
 
     [Header("공격 딜레이")]
     [SerializeField] protected float attackDelay;
     protected float lastAttackTime;
 
-    private PlayerMovement playerMovement;
+    protected PlayerMovement playerMovement;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         GetComponents();
     }
 
-    private void GetComponents()
+    protected void GetComponents()
     {
         playerMovement = GetComponent<PlayerMovement>();
     }
 
     protected override void InitValue()
     {
+        base.InitValue();
         detectedTargetCount = 1;
     }
 
@@ -51,7 +52,9 @@ public class DirectionAttack : DetectAttackClass
 
         if (rangePrefab != null)
         {
-            GameObject attackObject = Instantiate(rangePrefab, transform.position, Quaternion.identity);
+            Vector3 spawnPosition = transform.position;
+
+            GameObject attackObject = Instantiate(rangePrefab, spawnPosition, Quaternion.identity);
             if (attackObject.TryGetComponent<IRangeObject>(out var attackScript))
             {
                 attackScript.InitDirection(attackDirection);

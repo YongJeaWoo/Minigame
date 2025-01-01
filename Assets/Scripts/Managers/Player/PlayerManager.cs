@@ -23,5 +23,10 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
+    public void SetPlayer()
+    {
+
+    }
+
     public GameObject GetPlayer() => player;
 }

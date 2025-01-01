@@ -1,26 +1,8 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MovementParent
 {
-    private Vector2 inputVec;
     private Vector2 lastInputVec;
-
-    private Rigidbody2D rigid;
-
-    [Header("플레이어 움직임 속도")]
-    [SerializeField] private float moveSpeed;
-    [Header("그림자 오프셋")]
-    [SerializeField] private Vector2 shadowOffset;
-
-    private void Awake()
-    {
-        GetComponents();
-    }
-
-    private void GetComponents()
-    {
-        rigid = GetComponent<Rigidbody2D>();
-    }
 
     private void Start()
     {
@@ -39,27 +21,22 @@ public class PlayerMovement : MonoBehaviour
 
     private void InputKeys()
     {
-        inputVec.x = Input.GetAxisRaw("Horizontal");
-        inputVec.y = Input.GetAxisRaw("Vertical");
+        if (DontMove()) return;
 
-        if (inputVec != Vector2.zero)
+        direction.x = Input.GetAxisRaw("Horizontal");
+        direction.y = Input.GetAxisRaw("Vertical");
+
+        if (direction != Vector2.zero)
         {
-            lastInputVec = inputVec;
+            lastInputVec = direction;
         }
     }
 
-    private void FixedUpdate()
+    protected override void ObjectMovement()
     {
-        Movement();
-    }
-
-    private void Movement()
-    {
-        Vector2 nextVec = moveSpeed * Time.fixedDeltaTime * inputVec.normalized;
+        Vector2 nextVec = moveSpeed * Time.fixedDeltaTime * direction.normalized;
         rigid.MovePosition(rigid.position + nextVec);
     }
-
-    public Vector2 GetInputVector() => inputVec.normalized;
+    
     public Vector2 GetLastInputVector() => lastInputVec.normalized;
-    public Vector2 GetShadowOffset() => shadowOffset;
 }
