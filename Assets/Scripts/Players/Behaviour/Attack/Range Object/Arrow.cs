@@ -45,7 +45,7 @@ public class Arrow : MonoBehaviour, IRangeObject
                 health.TakeDamage(damaged);
             }
 
-            Destroy(gameObject);
+            ObjectPoolManager.Instance.ReturnToPool(gameObject);
         }
     }
 }

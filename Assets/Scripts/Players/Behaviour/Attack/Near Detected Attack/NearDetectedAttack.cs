@@ -28,7 +28,9 @@ public class NearDetectedAttack : DirectionAttack
         {
             Vector3 spawnPosition = transform.position;
 
-            GameObject attackObject = Instantiate(rangePrefab, spawnPosition, Quaternion.identity);
+            GameObject attackObject = ObjectPoolManager.Instance.GetFromPool(rangePrefab);
+            attackObject.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
+
             if (attackObject.TryGetComponent<IRangeObject>(out var attackScript))
             {
                 Vector2 attackDirection = (closestTarget.transform.position - spawnPosition).normalized;

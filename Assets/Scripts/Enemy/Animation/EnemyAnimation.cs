@@ -5,8 +5,9 @@ public class EnemyAnimation : AnimationParent
 {
     private Transform player;
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         FindPlayer();
     }
 
