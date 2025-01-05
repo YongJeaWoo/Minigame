@@ -14,11 +14,15 @@ public class EnemySpawner : MonoBehaviour
 
     private WaitForSeconds spawnInterval = new(5);
 
+    private Collider2D border;
+
     public void StartSpawning()
     {
+        if (spawnBoss) return;
+
         isSpawning = false;
 
-        if (!isSpawning && !spawnBoss)
+        if (!isSpawning)
         {
             StartCoroutine(SpawnEnemiesCoroutine());
         }
@@ -50,20 +54,27 @@ public class EnemySpawner : MonoBehaviour
 
         while (isSpawning)
         {
-            int maxSpawnCount = spawnsPos.Length;
-            int minSpawnCount = Mathf.FloorToInt(maxSpawnCount / maxSpawnCount / 2f);
-            int spawnCount = Random.Range(minSpawnCount, maxSpawnCount + 1);
+            List<Transform> validSpawns = GetDynamicSpawnPositions();
 
-            List<Transform> availableSpawns = new(spawnsPos);
+            if (validSpawns.Count == 0)
+            {
+                Debug.LogWarning("스폰 가능한 위치가 없습니다.");
+                yield break;
+            }
+
+            int spawnCount = Random.Range(1, validSpawns.Count + 1);
 
             for (int i = 0; i < spawnCount; i++)
             {
-                if (availableSpawns.Count == 0) break;
+                if (validSpawns.Count == 0) break;
 
                 GameObject randomEnemy = normalEnemies[Random.Range(0, normalEnemies.Count)];
-                Transform randomSpawn = GetRandomSpawnLocation(availableSpawns);
+                Transform spawnLocation = GetRandomSpawnLocationWithinBounds(validSpawns);
 
-                ObjectPoolManager.Instance.GetFromPool(randomEnemy, randomSpawn);
+                if (spawnLocation != null)
+                {
+                    ObjectPoolManager.Instance.GetFromPool(randomEnemy, spawnLocation);
+                }
             }
 
             yield return spawnInterval;
@@ -78,10 +89,13 @@ public class EnemySpawner : MonoBehaviour
             yield break;
         }
 
-        GameObject bossPrefab = enemiesPrefab[bossIndex - 1]; 
-        Transform randomSpawn = spawnsPos[Random.Range(0, spawnsPos.Length)]; 
+        GameObject bossPrefab = enemiesPrefab[bossIndex - 1];
+        Transform randomSpawn = GetRandomSpawnLocationWithinBounds(new List<Transform>(spawnsPos));
 
-        ObjectPoolManager.Instance.GetFromPool(bossPrefab, randomSpawn);
+        if (randomSpawn != null)
+        {
+            ObjectPoolManager.Instance.GetFromPool(bossPrefab, randomSpawn);
+        }
 
         spawnBoss = false;
 
@@ -101,11 +115,49 @@ public class EnemySpawner : MonoBehaviour
         return normalEnemies;
     }
 
-    private Transform GetRandomSpawnLocation(List<Transform> availableSpawns)
+    private List<Transform> GetDynamicSpawnPositions()
     {
+        List<Transform> dynamicSpawns = new();
+
+        foreach (Transform spawn in spawnsPos)
+        {
+            if (IsWithinPlayableArea(spawn.position))
+            {
+                dynamicSpawns.Add(spawn);
+            }
+        }
+
+        return dynamicSpawns;
+    }
+
+    private Transform GetRandomSpawnLocationWithinBounds(List<Transform> availableSpawns)
+    {
+        availableSpawns.RemoveAll(spawn => !IsWithinPlayableArea(spawn.position));
+        if (availableSpawns.Count == 0)
+        {
+            Debug.LogWarning("스폰 가능한 위치가 없습니다.");
+            return null;
+        }
+
         int randomIndex = Random.Range(0, availableSpawns.Count);
         Transform selectedSpawn = availableSpawns[randomIndex];
         availableSpawns.RemoveAt(randomIndex);
         return selectedSpawn;
+    }
+
+    private bool IsWithinPlayableArea(Vector3 position)
+    {
+        if (border != null)
+        {
+            return border.bounds.Contains(position);
+        }
+
+        return false;
+    }
+
+    public Collider2D GetCollider(StageController stageController)
+    {
+        border = stageController.GetConfinerBorder();
+        return border;
     }
 }

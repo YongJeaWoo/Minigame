@@ -33,7 +33,7 @@ public abstract class DetectAttackClass : MonoBehaviour
 
     protected virtual void DetectTargets()
     {
-        if (health.GetIsDead())
+        if (health.GetIsDead() || StageManager.Instance.GetIsStageEnd())
         {
             detectedTargets.Clear();
             return;
