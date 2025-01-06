@@ -16,6 +16,16 @@ public class EnemySpawner : MonoBehaviour
 
     private Collider2D border;
 
+    private void Start()
+    {
+        StageManager.Instance.OnStageEnd += StopSpawning;
+    }
+
+    private void OnDisable()
+    {
+        StageManager.Instance.OnStageEnd -= StopSpawning;
+    }
+
     public void StartSpawning()
     {
         if (spawnBoss) return;

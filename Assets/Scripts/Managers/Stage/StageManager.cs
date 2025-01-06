@@ -1,22 +1,11 @@
+using System;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
+    #region Singleton 
     public static StageManager Instance;
-
-    private Coroutine blinkCoroutine;
-    private WaitForSeconds blinkTimer = new(0.5f);
-
-    [Header("현재 데이터 확인용")]
-    [SerializeField] private StageData currentData;
-
-    private float remainingTimer;
-    private bool isStageEnd;
-
-    // 나중에 제거
-    [SerializeField] private TextMeshProUGUI timerText;
 
     private void Awake()
     {
@@ -34,6 +23,22 @@ public class StageManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    #endregion
+
+    public event Action OnStageEnd;
+
+    private Coroutine blinkCoroutine;
+    private WaitForSeconds blinkTimer = new(0.5f);
+
+    [Header("현재 데이터 확인용")]
+    [SerializeField] private StageData currentData;
+
+    private PlayerHealth playerHealth;
+
+    private float remainingTimer;
+    private bool isStageEnd;
+
+    private readonly string panelName = $"Info Panel";
 
     public void SetStageData(StageData data)
     {
@@ -51,6 +56,7 @@ public class StageManager : MonoBehaviour
     {
         isStageEnd = false;
         remainingTimer = currentData.stageTimer;
+        playerHealth = PlayerManager.Instance.GetPlayer().GetComponent<PlayerHealth>();
         StartCoroutine(TimeLimitCoroutine());
     }
 
@@ -61,7 +67,7 @@ public class StageManager : MonoBehaviour
 
         while (Time.time < endTime)
         {
-            if (PlayerManager.Instance.GetPlayer().GetComponent<PlayerHealth>().GetIsDead())
+            if (playerHealth.GetIsDead())
             {
                 OnPlayerDeadEnd();
                 yield break;
@@ -77,42 +83,57 @@ public class StageManager : MonoBehaviour
 
     private void OnPlayerDeadEnd()
     {
-        timerText.text = $"00:00";
+        StopCoroutine(TimeLimitCoroutine());
         OnTimerEnd();
     }
 
     private void OnTimerEnd()
     {
+        OnStageEnd?.Invoke();
+
         if (blinkCoroutine != null)
         {
             StopCoroutine(blinkCoroutine);
             blinkCoroutine = null;
-            timerText.color = Color.white;
+            UIManager.Instance.SetTimerColor(Color.white);
         }
 
         isStageEnd = true;
+
+        var panel = PopupManager.Instance.AddPopup(panelName);
+
+        if (playerHealth.GetIsDead())
+        {
+            var info = panel.GetComponentInChildren<InfoPanel>();
+            info.SetInfoText($"플레이어가 죽었습니다.");
+        }
+        else
+        {
+            var info = panel.GetComponentInChildren<InfoPanel>();
+            info.SetInfoText($"게임을 클리어 했습니다.");
+        }
     }
 
     private void UpdateTimer()
     {
-        if (timerText != null)
+        if (UIManager.Instance.GetTimer() != null)
         {
             if (remainingTimer <= 0)
             {
-                timerText.text = $"00:00";
+                UIManager.Instance.SetTimer($"00:00");
 
                 if (blinkCoroutine != null)
                 {
                     StopCoroutine(blinkCoroutine);
                     blinkCoroutine = null;
-                    timerText.color = Color.white;
+                    UIManager.Instance.SetTimerColor(Color.white);
                 }
             }
             else
             {
                 int minutes = Mathf.FloorToInt(remainingTimer / 60f);
                 int seconds = Mathf.FloorToInt(remainingTimer % 60f);
-                timerText.text = $"{minutes:D2}:{seconds:D2}";
+                UIManager.Instance.SetTimer($"{minutes:D2}:{seconds:D2}");
 
                 if (remainingTimer <= 10)
                 {
@@ -131,12 +152,12 @@ public class StageManager : MonoBehaviour
 
         while (remainingTimer <= 10 && remainingTimer > 0)
         {
-            timerText.color = isRed ? Color.red : Color.white;
+            UIManager.Instance.SetTimerColor(isRed ? Color.red : Color.white);
             isRed = !isRed;
             yield return blinkTimer;
         }
 
-        timerText.color = Color.white;
+        UIManager.Instance.SetTimerColor(Color.white);
     }
 
     public bool GetIsStageEnd() => isStageEnd;
