@@ -1,8 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StageController : MonoBehaviour
 {
+    [Header("화면 경계 콜라이더")]
     [SerializeField] private Collider2D confinerBorder;
+    [Header("화면 페이드 아웃")]
+    [SerializeField] private Image fadeImage;
 
     private void Start()
     {

@@ -21,7 +21,7 @@ public class EnemySpawner : MonoBehaviour
         StageManager.Instance.OnStageEnd += StopSpawning;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         StageManager.Instance.OnStageEnd -= StopSpawning;
     }
