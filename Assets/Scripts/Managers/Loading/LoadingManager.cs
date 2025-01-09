@@ -17,7 +17,6 @@ public class LoadingManager : MonoBehaviour
     private const string loadingSceneName = "Loading";
 
     private float fakeProgress = 0f;
-    private const float smoothingSpeed = 0.3f;
 
     private bool isAlmostDone = false;
     private bool isLoadingAnimation = true;
@@ -36,6 +35,8 @@ public class LoadingManager : MonoBehaviour
 
     private IEnumerator DelayStartCoroutine()
     {
+        // TODO : UIManager가 파괴되지 않는 경우 GUI 자체를 끄는 곳을 여기서 수행 해야 함
+
         float delayTime = Mathf.Lerp(1.0f, 1.5f, Mathf.InverseLerp(0f, 1f, fakeProgress)); 
         yield return new WaitForSeconds(delayTime);
         StartCoroutine(LoadAsync(nextSceneName));
@@ -48,42 +49,50 @@ public class LoadingManager : MonoBehaviour
         AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
         op.allowSceneActivation = false;
 
-        //ToggleGUI();
+        float totalTime = 5f;
+        float elapsedTime = 0f;
 
         while (!op.isDone)
         {
             float realProgress = Mathf.Clamp01(op.progress / 0.9f);
 
-            fakeProgress = Mathf.SmoothStep(fakeProgress, realProgress, Time.unscaledDeltaTime * smoothingSpeed);
+            elapsedTime += Time.unscaledDeltaTime;
+            float progressTimeRatio = Mathf.Clamp01(elapsedTime / totalTime);
+
+            fakeProgress = Mathf.SmoothStep(0f, 1f, EaseInOut(progressTimeRatio));
+            fakeProgress = Mathf.Min(fakeProgress, realProgress);
+
             loadingFillImage.fillAmount = fakeProgress;
 
             string pText = $"{Mathf.FloorToInt(fakeProgress * 100):D2}%";
             percentText.text = pText;
 
-            if(fakeProgress >= 0.99f && !isAlmostDone)
+            if (fakeProgress >= 0.99f && !isAlmostDone)
             {
                 isAlmostDone = true;
-                loadingText.text = "로딩 완료!";
                 isLoadingAnimation = false;  // 애니메이션 중지
-            }
-
-            if (fakeProgress < 1f)
-            {
-                fakeProgress = Mathf.MoveTowards(fakeProgress, 1f, Time.unscaledDeltaTime * smoothingSpeed * 0.5f);
             }
 
             if (fakeProgress >= 1f)
             {
                 fakeProgress = 1f;
-                percentText.text = "100%"; 
+                loadingText.text = "로딩 완료!";
+                percentText.text = "100%";
 
-                yield return new WaitForSeconds(1f); 
+                yield return new WaitForSeconds(1f);
 
-                op.allowSceneActivation = true;  
+                op.allowSceneActivation = true;
+
+                // TODO : UIManager가 파괴되지 않는 경우 GUI 자체를 키는 곳을 여기서 수행 해야 함
             }
 
             yield return null;
         }
+    }
+
+    private float EaseInOut(float t)
+    {
+        return t < 0.5f ? 2f * t * t : -1f + (4f - 2f * t) * t;
     }
 
     private IEnumerator LoadingTextAnimationCoroutine()
@@ -99,10 +108,5 @@ public class LoadingManager : MonoBehaviour
 
             yield return new WaitForSeconds(0.5f);
         }
-    }
-
-    private void ToggleGUI()
-    {
-        // UI 제거용
     }
 }

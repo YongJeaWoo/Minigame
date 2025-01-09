@@ -1,59 +1,39 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class InteractionPanel : MonoBehaviour
+public class StageEndAnyInputPanel : MonoBehaviour
 {
     protected readonly string isOpenText = $"isOpen";
-
-    [SerializeField] protected Button exitButton;
 
     [Header("정보 텍스트")]
     [SerializeField] private TextMeshProUGUI infoText;
 
-    protected Animator animator;
+    private bool isInputKey = false;
 
-    protected virtual void Awake()
-    {
-        InitValues();
-    }
+    private Animator animator;
 
-    protected virtual void InitValues()
+    public event Action OnAnyInputKey;
+
+    private void Awake()
     {
         animator = GetComponent<Animator>();
         animator.SetBool(isOpenText, true);
-
-        if (exitButton != null)
-        {
-            exitButton.onClick.AddListener(ExitButton);
-        }
     }
 
-    public void Init(Animator animator)
+    private void Update()
     {
-        this.animator = animator;
+        InputKey();
     }
 
-    public void ExitAnyClick(BaseEventData eventData)
+    private void InputKey()
     {
-        PointerEventData pointerEventData = eventData as PointerEventData;
-        if (pointerEventData == null) return;
-
-        RectTransform panelRect = transform.GetComponent<RectTransform>();
-
-        bool outSidePanel = !RectTransformUtility.RectangleContainsScreenPoint(panelRect, pointerEventData.position);
-
-        if (outSidePanel)
+        if (Input.anyKeyDown && !isInputKey)
         {
+            isInputKey = true;
             StartCoroutine(RemovePopupCoroutine());
         }
-    }
-
-    public void ExitButton()
-    {
-        StartCoroutine(RemovePopupCoroutine());
     }
 
     protected IEnumerator RemovePopupCoroutine()
@@ -69,6 +49,8 @@ public class InteractionPanel : MonoBehaviour
         }
 
         var parentName = transform.parent.name;
+        OnAnyInputKey?.Invoke();
+
         PopupManager.Instance.RemovePopup(parentName);
 
         yield break;

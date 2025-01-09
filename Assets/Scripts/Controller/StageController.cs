@@ -1,16 +1,14 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class StageController : MonoBehaviour
 {
     [Header("화면 경계 콜라이더")]
     [SerializeField] private Collider2D confinerBorder;
-    [Header("화면 페이드 아웃")]
-    [SerializeField] private Image fadeImage;
 
     private void Start()
     {
-        SpawnEnemies();
+        StartCoroutine(WaitSpawnEnemiesCoroutine());
     }
 
     private void SpawnEnemies()
@@ -19,6 +17,13 @@ public class StageController : MonoBehaviour
         var spawner = obj.GetComponent<EnemySpawner>();
         spawner.GetCollider(this);
         spawner.StartSpawning();
+    }
+
+    private IEnumerator WaitSpawnEnemiesCoroutine()
+    {
+        yield return StageManager.Instance.FadeMethod(1, 0);
+        yield return new WaitForSeconds(1f);
+        SpawnEnemies();
     }
 
     public Collider2D GetConfinerBorder() => confinerBorder;

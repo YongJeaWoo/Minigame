@@ -10,6 +10,7 @@ public class StageManager : MonoBehaviour
     private void Awake()
     {
         Singleton();
+        DoAwake();
     }
 
     private void Singleton()
@@ -27,6 +28,7 @@ public class StageManager : MonoBehaviour
 
     public event Action OnStageEnd;
 
+    private FadeClass fadeClass;
     private Coroutine blinkCoroutine;
     private WaitForSeconds blinkTimer = new(0.5f);
 
@@ -38,13 +40,18 @@ public class StageManager : MonoBehaviour
     private float remainingTimer;
     private bool isStageEnd;
 
-    private readonly string panelName = $"Info Panel";
+    private readonly string panelName = $"Input Panel";
 
     public void SetStageData(StageData data)
     {
         currentData = data;
         remainingTimer = currentData.stageTimer;
         UpdateTimer(); 
+    }
+
+    private void DoAwake()
+    {
+        fadeClass =GetComponent<FadeClass>();
     }
 
     private void Start()
@@ -101,17 +108,18 @@ public class StageManager : MonoBehaviour
         isStageEnd = true;
 
         var panel = PopupManager.Instance.AddPopup(panelName);
+        var anyInputPanel = panel.GetComponentInChildren<StageEndAnyInputPanel>();
 
         if (playerHealth.GetIsDead())
         {
-            var info = panel.GetComponentInChildren<InfoPanel>();
-            info.SetInfoText($"플레이어가 죽었습니다.");
+            anyInputPanel.SetInfoText($"플레이어가 죽었습니다.");
         }
         else
         {
-            var info = panel.GetComponentInChildren<InfoPanel>();
-            info.SetInfoText($"게임을 클리어 했습니다.");
+            anyInputPanel.SetInfoText($"게임을 클리어 했습니다.");
         }
+
+        anyInputPanel.OnAnyInputKey += GoTitle;
     }
 
     private void UpdateTimer()
@@ -158,6 +166,30 @@ public class StageManager : MonoBehaviour
         }
 
         UIManager.Instance.SetTimerColor(Color.white);
+    }
+
+    public Coroutine FadeMethod(float start, float end)
+    {
+        if (fadeClass == null) return null;
+
+        return fadeClass.FadeMethod(start, end);
+    }
+
+    public void GoTitle()
+    {
+        StartCoroutine(GoTitleCoroutine());
+    }
+
+    private IEnumerator GoTitleCoroutine()
+    {
+        Coroutine fadeCoroutine = FadeMethod(0, 1);
+
+        if (fadeCoroutine != null)
+        {
+            yield return fadeCoroutine;
+        }
+
+        LoadingManager.LoadScene("Title");
     }
 
     public bool GetIsStageEnd() => isStageEnd;
