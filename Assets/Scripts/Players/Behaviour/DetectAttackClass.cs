@@ -12,9 +12,12 @@ public abstract class DetectAttackClass : MonoBehaviour
     protected int maxDetectableTargets = 6;
     protected int detectedTargetCount;
 
+    protected float attackPoint;
+
     protected List<Collider2D> detectedTargets = new List<Collider2D>();
 
     private PlayerHealth health;
+    protected PlayerData playerData;
 
     protected virtual void Start()
     {
@@ -29,6 +32,8 @@ public abstract class DetectAttackClass : MonoBehaviour
     protected virtual void InitValue()
     {
         health = GetComponent<PlayerHealth>();
+        playerData = GetComponent<PlayerInfoData>().GetPlayerData();
+        attackPoint = playerData.GetAttackPoint();
     }
 
     protected virtual void DetectTargets()
@@ -78,4 +83,6 @@ public abstract class DetectAttackClass : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position + detectPos, attackRange);
     }
+
+    public float GetAttackPoint() => attackPoint;
 }

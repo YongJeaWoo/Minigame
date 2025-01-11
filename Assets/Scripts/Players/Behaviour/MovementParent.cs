@@ -4,7 +4,6 @@ public abstract class MovementParent : MonoBehaviour
 {
     [Header("플레이어 움직임 속도")]
     [SerializeField] protected float moveSpeed;
-    protected float originSpeed;
 
     [Header("그림자 오프셋")]
     [SerializeField] protected Vector2 shadowOffset;
@@ -19,20 +18,10 @@ public abstract class MovementParent : MonoBehaviour
         GetComponents();
     }
 
-    protected void GetComponents()
+    protected virtual void GetComponents()
     {
         rigid = GetComponent<Rigidbody2D>();
         health = GetComponent<HealthParent>();
-    }
-
-    protected void OnEnable()
-    {
-        InitSpeed();
-    }
-
-    private void InitSpeed()
-    {
-        originSpeed = moveSpeed;
     }
 
     protected void FixedUpdate()

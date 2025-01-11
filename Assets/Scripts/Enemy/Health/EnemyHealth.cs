@@ -4,11 +4,12 @@ using UnityEngine;
 public class EnemyHealth : HealthParent
 {
     private Collider2D col;
+    private ItemDrop itemDrop;
 
     protected override void Awake()
     {
         base.Awake();
-        GetCollider();
+        InitGetComponents();
     }
 
     protected override void OnEnable()
@@ -17,9 +18,10 @@ public class EnemyHealth : HealthParent
         InitCollider();
     }
 
-    private void GetCollider()
+    private void InitGetComponents()
     {
         col = GetComponent<Collider2D>();
+        itemDrop = GetComponent<ItemDrop>();
     }
 
     protected void InitCollider()
@@ -53,8 +55,10 @@ public class EnemyHealth : HealthParent
 
         yield return new WaitForSeconds(stateInfo.length);
 
+        itemDrop.Drop();
+
         yield return new WaitForSeconds(2f);
 
-        Destroy(gameObject);
+        ObjectPoolManager.Instance.ReturnToPool(gameObject);
     }
 }

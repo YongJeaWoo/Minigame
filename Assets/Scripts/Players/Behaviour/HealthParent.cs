@@ -22,12 +22,17 @@ public class HealthParent : MonoBehaviour
 
     protected virtual void OnEnable()
     {
+        InitDead();
         InitHpBar();
     }
 
-    protected void InitHpBar()
+    protected void InitDead()
     {
         isDead = false;
+    }
+
+    protected virtual void InitHpBar()
+    {
         health = maxHealth;
     }
 

@@ -4,14 +4,23 @@ public class PlayerMovement : MovementParent
 {
     private Vector2 lastInputVec;
 
+    private PlayerData playerData;
+
     private void Start()
     {
         InitValue();
     }
 
+    protected override void GetComponents()
+    {
+        base.GetComponents();
+        playerData = GetComponent<PlayerInfoData>().GetPlayerData();
+    }
+
     private void InitValue()
     {
         lastInputVec = Vector2.right;
+        moveSpeed = playerData.GetMoveSpeed();
     }
 
     private void Update()

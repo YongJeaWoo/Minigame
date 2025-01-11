@@ -59,7 +59,7 @@ public class DirectionAttack : DetectAttackClass
 
             if (attackObject.TryGetComponent<IRangeObject>(out var attackScript))
             {
-                attackScript.InitDirection(attackDirection);
+                attackScript.InitDirection(attackDirection, this);
             }
 
             lastAttackTime = Time.time;

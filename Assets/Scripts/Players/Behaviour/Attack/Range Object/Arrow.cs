@@ -8,14 +8,14 @@ public class Arrow : MonoBehaviour, IRangeObject
     [SerializeField] private LayerMask targetLayer;
     [Header("움직임 속도")]
     [SerializeField] private float moveSpeed;
-    [Header("공격력")]
-    [SerializeField] private float damaged;
+    private float damaged;
 
-    public void InitDirection(Vector2 attackDirection)
+    public void InitDirection(Vector2 attackDirection, DetectAttackClass playerAttack)
     {
         direction = attackDirection;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
+        damaged = playerAttack.GetAttackPoint();
     }
 
     private void Update()

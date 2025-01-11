@@ -34,7 +34,7 @@ public class NearDetectedAttack : DirectionAttack
             if (attackObject.TryGetComponent<IRangeObject>(out var attackScript))
             {
                 Vector2 attackDirection = (closestTarget.transform.position - spawnPosition).normalized;
-                attackScript.InitDirection(attackDirection);
+                attackScript.InitDirection(attackDirection, this);
             }
 
             lastAttackTime = Time.time;

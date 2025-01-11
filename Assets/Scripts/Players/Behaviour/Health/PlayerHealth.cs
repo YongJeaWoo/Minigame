@@ -1,20 +1,33 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerHealth : HealthParent
 {
-    [SerializeField] private float lerpTimer;
     [SerializeField] private float chipSpeed;
+    private float lerpTimer;
 
     [Header("앞 체력 바")]
     [SerializeField] private Image frontHealthBar;
     [Header("뒷 체력 바")]
     [SerializeField] private Image backHealthBar;
 
+    private PlayerData playerData;
+    
     private void Update()
     {
         UpdateHealthUI();
+    }
+
+    protected override void GetComponents()
+    {
+        base.GetComponents();
+        playerData = GetComponent<PlayerInfoData>().GetPlayerData();
+    }
+
+    protected override void InitHpBar()
+    {
+        maxHealth = playerData.GetMaxHp();
+        base.InitHpBar();
     }
 
     private void UpdateHealthUI()
@@ -30,6 +43,7 @@ public class PlayerHealth : HealthParent
             backHealthBar.color = Color.red;
             lerpTimer += Time.deltaTime;
             float percentComplete = lerpTimer / chipSpeed;
+            percentComplete *= percentComplete;
             backHealthBar.fillAmount = Mathf.Lerp(fillBack, hpFraction, percentComplete);
         }
 

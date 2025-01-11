@@ -54,11 +54,6 @@ public class StageManager : MonoBehaviour
         fadeClass =GetComponent<FadeClass>();
     }
 
-    private void Start()
-    {
-        StageStart();
-    }
-
     public void StageStart()
     {
         isStageEnd = false;
@@ -124,7 +119,10 @@ public class StageManager : MonoBehaviour
 
     private void UpdateTimer()
     {
-        if (UIManager.Instance.GetTimer() != null)
+        var timerText = UIManager.Instance.GetTimer();
+        timerText.gameObject.SetActive(true);
+
+        if (timerText != null)
         {
             if (remainingTimer <= 0)
             {
@@ -182,6 +180,9 @@ public class StageManager : MonoBehaviour
 
     private IEnumerator GoTitleCoroutine()
     {
+        var timerText = UIManager.Instance.GetTimer();
+        timerText.gameObject.SetActive(false);
+
         Coroutine fadeCoroutine = FadeMethod(0, 1);
 
         if (fadeCoroutine != null)
