@@ -4,8 +4,10 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance;
 
-    [SerializeField] private GameObject player;
+    private GameObject player;
+    private GameObject playerPrefab;
 
+    #region Singleton
     private void Awake()
     {
         Singleton();
@@ -21,11 +23,19 @@ public class PlayerManager : MonoBehaviour
         {
             Destroy(Instance);
         }
+
+        DontDestroyOnLoad(gameObject);
+    }
+    #endregion
+
+    public void SetPlayer(PlayerObjectData player)
+    {
+        playerPrefab = player.GetPlayerPrefab();
     }
 
-    public void SetPlayer()
+    public void InstantPlayer()
     {
-
+        player = Instantiate(playerPrefab);
     }
 
     public GameObject GetPlayer() => player;

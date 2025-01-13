@@ -1,8 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyMovement : MovementParent
 {
     private EnemyAnimation enemy;
+    private bool isStopped = false;
 
     protected override void Awake()
     {
@@ -12,6 +14,8 @@ public class EnemyMovement : MovementParent
 
     protected override void ObjectMovement()
     {
+        if (isStopped) return;
+
         if (DontMove() || 
             enemy.GetPlayer() == null)
         {
@@ -24,5 +28,20 @@ public class EnemyMovement : MovementParent
 
         Vector2 nextVec = moveSpeed * Time.fixedDeltaTime * direction;
         rigid.MovePosition(rigid.position + nextVec);
+    }
+
+    public void StopMovement(float duration)
+    {
+        if (!isStopped) 
+        {
+            isStopped = true; 
+            StartCoroutine(ResetMovement(duration)); 
+        }
+    }
+
+    private IEnumerator ResetMovement(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        isStopped = false;
     }
 }

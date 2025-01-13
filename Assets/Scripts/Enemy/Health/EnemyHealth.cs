@@ -5,6 +5,9 @@ public class EnemyHealth : HealthParent
 {
     private Collider2D col;
     private ItemDrop itemDrop;
+    private EnemyMovement movement;
+
+    [SerializeField] private float pauseTimer;
 
     protected override void Awake()
     {
@@ -22,6 +25,7 @@ public class EnemyHealth : HealthParent
     {
         col = GetComponent<Collider2D>();
         itemDrop = GetComponent<ItemDrop>();
+        movement = GetComponent<EnemyMovement>();
     }
 
     protected void InitCollider()
@@ -33,6 +37,11 @@ public class EnemyHealth : HealthParent
     {
         base.TakeDamage(damage);
         animator.HitAnimator();
+
+        if (movement != null)
+        {
+            movement.StopMovement(pauseTimer);
+        }
     }
 
     protected override void Death()

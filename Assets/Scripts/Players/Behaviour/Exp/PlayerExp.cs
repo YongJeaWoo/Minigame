@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using UnityEngine;
 
 public class PlayerExp : MonoBehaviour
@@ -10,6 +10,8 @@ public class PlayerExp : MonoBehaviour
 
     private PlayerData playerData;
 
+    public event Action OnLevelUp;
+
     private void Awake()
     {
         GetComponents();
@@ -18,11 +20,6 @@ public class PlayerExp : MonoBehaviour
     private void Start()
     {
         InitLevel();   
-    }
-
-    private void Update()
-    {
-        Debug.Log($"currentExp : {exp} /\n maxExp : {maxExp} /\n basemaxexp : {baseMaxExp} / \n Level : {level}");
     }
 
     private void GetComponents()
@@ -57,6 +54,11 @@ public class PlayerExp : MonoBehaviour
         exp -= maxExp;
         level++;
         maxExp = baseMaxExp * Mathf.Pow(1.3f, level);
+
+        if (level % 5 == 0)
+        {
+            OnLevelUp?.Invoke();
+        }
     }
 
     private void UpdateExpUI()
