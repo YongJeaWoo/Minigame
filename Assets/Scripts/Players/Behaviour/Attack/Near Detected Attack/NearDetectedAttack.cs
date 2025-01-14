@@ -24,11 +24,11 @@ public class NearDetectedAttack : DirectionAttack
             }
         }
 
-        if (rangePrefab != null && closestTarget != null)
+        if (attackPrefab != null && closestTarget != null)
         {
             Vector3 spawnPosition = transform.position;
 
-            GameObject attackObject = ObjectPoolManager.Instance.GetFromPool(rangePrefab);
+            GameObject attackObject = ObjectPoolManager.Instance.GetFromPool(attackPrefab);
             attackObject.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
 
             if (attackObject.TryGetComponent<IRangeObject>(out var attackScript))

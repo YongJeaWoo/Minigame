@@ -43,7 +43,7 @@ public class EnemyHealth : HealthParent
             movement.StopMovement(pauseTimer);
         }
     }
-
+    
     protected override void Death()
     {
         col.enabled = false;

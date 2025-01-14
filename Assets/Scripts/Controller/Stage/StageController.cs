@@ -8,6 +8,10 @@ public class StageController : MonoBehaviour
     [SerializeField] private Collider2D confinerBorder;
     [SerializeField] private CinemachineVirtualCamera cam;
 
+    private GameObject player;
+
+    private readonly string Levelup = $"Level Up Panel";
+
     private bool isCoroutineRunning = false;
 
     private void Start()
@@ -18,26 +22,34 @@ public class StageController : MonoBehaviour
     private void StageEntry()
     {
         PlayerManager.Instance.InstantPlayer();
-        var player = PlayerManager.Instance.GetPlayer();
+        player = PlayerManager.Instance.GetPlayer();
         cam.Follow = player.transform;
         cam.LookAt = player.transform;
+        EventRegister(true);
         StartCoroutine(WaitSpawnEnemiesCoroutine());
-    }
-
-    private void OnEnable()
-    {
-        
     }
 
     private void OnDisable()
     {
-        
+        EventRegister(false);
     }
 
-    private void EventRegister()
+    private void EventRegister(bool isOn)
     {
-        var player = PlayerManager.Instance.GetPlayer();
+        if (player == null) return;
+
         var playerExp = player.GetComponent<PlayerExp>();
+        if (playerExp == null) return;
+
+        if (isOn)
+        {
+            playerExp.OnLevelUp += LevelUpPopup;
+        }
+        else
+        {
+            playerExp.OnLevelUp -= LevelUpPopup;
+        }
+
     }
 
     private IEnumerator WaitSpawnEnemiesCoroutine()
@@ -63,7 +75,7 @@ public class StageController : MonoBehaviour
 
     private void LevelUpPopup()
     {
-
+        PopupManager.Instance.AddPopup(Levelup);
     }
 
     public Collider2D GetConfinerBorder() => confinerBorder;

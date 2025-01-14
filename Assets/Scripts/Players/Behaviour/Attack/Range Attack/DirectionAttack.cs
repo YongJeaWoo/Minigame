@@ -2,13 +2,6 @@ using UnityEngine;
 
 public class DirectionAttack : DetectAttackClass
 {
-    [Header("생성할 공격용 프리팹")]
-    [SerializeField] protected GameObject rangePrefab;
-
-    [Header("공격 딜레이")]
-    [SerializeField] protected float attackDelay;
-    protected float lastAttackTime;
-
     protected PlayerMovement playerMovement;
 
     protected virtual void Awake()
@@ -50,11 +43,11 @@ public class DirectionAttack : DetectAttackClass
             attackDirection = playerMovement.GetLastInputVector();
         }
 
-        if (rangePrefab != null)
+        if (attackPrefab != null)
         {
             Vector3 spawnPosition = transform.position;
 
-            GameObject attackObject = ObjectPoolManager.Instance.GetFromPool(rangePrefab);
+            GameObject attackObject = ObjectPoolManager.Instance.GetFromPool(attackPrefab);
             attackObject.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
 
             if (attackObject.TryGetComponent<IRangeObject>(out var attackScript))

@@ -1,13 +1,11 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TitleController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private GameObject selectCharacterPanel;
     [SerializeField] private CharacterFinalSelector characterFinalSelector;
-    [SerializeField] private Button confirmButton;
 
     private bool isAnyKeyDown = false;
 
@@ -37,10 +35,6 @@ public class TitleController : MonoBehaviour
     public void GoInGame()
     {
         var character = characterFinalSelector.GetSelectedCharacter();
-        if (character == null)
-        {
-            confirmButton.interactable = false;
-        }
 
         PlayerManager.Instance.SetPlayer(character);
         LoadingManager.LoadScene("Game");

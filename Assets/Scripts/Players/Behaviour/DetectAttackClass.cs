@@ -9,6 +9,12 @@ public abstract class DetectAttackClass : MonoBehaviour
     [SerializeField] protected float attackRange = 1.5f;
     [Header("탐지 위치 값")]
     [SerializeField] protected Vector3 detectPos;
+    [Header("생성할 공격용 프리팹")]
+    [SerializeField] protected GameObject attackPrefab;
+    [Header("공격 딜레이")]
+    [SerializeField] protected float attackDelay;
+    protected float lastAttackTime;
+
     protected int maxDetectableTargets = 6;
     protected int detectedTargetCount;
 
@@ -16,7 +22,7 @@ public abstract class DetectAttackClass : MonoBehaviour
 
     protected List<Collider2D> detectedTargets = new List<Collider2D>();
 
-    private PlayerHealth health;
+    protected PlayerHealth health;
     protected PlayerData playerData;
 
     protected virtual void Start()
@@ -78,11 +84,12 @@ public abstract class DetectAttackClass : MonoBehaviour
 
     protected abstract void PerformAttack();
     
-    protected void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position + detectPos, attackRange);
     }
 
+    public float SetAttackPoint(float value) => attackPoint += (attackPoint * value);
     public float GetAttackPoint() => attackPoint;
 }
