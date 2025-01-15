@@ -9,6 +9,9 @@ public class HealthParent : MonoBehaviour
     protected bool isDead = false;
 
     protected AnimationParent animator;
+    protected SpriteRenderer sr;
+
+    private int originOrderLayer;
 
     protected virtual void Awake()
     {
@@ -18,17 +21,21 @@ public class HealthParent : MonoBehaviour
     protected virtual void GetComponents()
     {
         animator = GetComponent<AnimationParent>();
+        sr = GetComponent<SpriteRenderer>();
     }
 
     protected virtual void OnEnable()
     {
-        InitDead();
-        InitHpBar();
+        InitValue();
     }
 
-    protected void InitDead()
+    protected void InitValue()
     {
         isDead = false;
+        originOrderLayer = 7;
+        sr.sortingOrder = originOrderLayer;
+
+        InitHpBar();
     }
 
     protected virtual void InitHpBar()
@@ -51,6 +58,15 @@ public class HealthParent : MonoBehaviour
     {
         isDead = true;
         animator.DeadAnimator();
+        DecreaseSortingLayer();
+    }
+
+    private void DecreaseSortingLayer()
+    {
+        if (sr != null)
+        {
+            sr.sortingOrder--;
+        }
     }
 
     public bool GetIsDead() => isDead;

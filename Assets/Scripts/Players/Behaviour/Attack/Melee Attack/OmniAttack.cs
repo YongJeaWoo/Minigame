@@ -47,7 +47,7 @@ public class OmniAttack : DetectAttackClass
                 var attack = ObjectPoolManager.Instance.GetFromPool(attackPrefab);
                 attack.transform.SetPositionAndRotation(target.transform.position, Quaternion.identity);
 
-                if (target.TryGetComponent<EnemyHealth>(out var health))
+                if (target.TryGetComponent<HealthParent>(out var health))
                 {
                     health.TakeDamage(attackPoint);
                 }

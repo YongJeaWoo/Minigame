@@ -6,6 +6,7 @@ public class EnemyHealth : HealthParent
     private Collider2D col;
     private ItemDrop itemDrop;
     private EnemyMovement movement;
+    private Rigidbody2D rb;
 
     [SerializeField] private float pauseTimer;
 
@@ -26,11 +27,13 @@ public class EnemyHealth : HealthParent
         col = GetComponent<Collider2D>();
         itemDrop = GetComponent<ItemDrop>();
         movement = GetComponent<EnemyMovement>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     protected void InitCollider()
     {
         col.enabled = true;
+        rb.isKinematic = false;
     }
 
     public override void TakeDamage(float damage)
@@ -38,7 +41,7 @@ public class EnemyHealth : HealthParent
         base.TakeDamage(damage);
         animator.HitAnimator();
 
-        if (movement != null)
+        if (movement != null && !isDead)
         {
             movement.StopMovement(pauseTimer);
         }
@@ -46,13 +49,17 @@ public class EnemyHealth : HealthParent
     
     protected override void Death()
     {
-        col.enabled = false;
         base.Death();
         StartCoroutine(WaitForDeathAnimation());
     }
 
     private IEnumerator WaitForDeathAnimation()
     {
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.isKinematic = true;
+        col.enabled = false;
+
         var f_animator = animator.GetAnimator();
         AnimatorStateInfo stateInfo = f_animator.GetCurrentAnimatorStateInfo(0);
 
