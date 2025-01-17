@@ -30,10 +30,10 @@ public class LevelDataManager : MonoBehaviour
     {
         if (upgradeLevels.ContainsKey(upgradeData))
         {
-            return upgradeLevels[upgradeData];
+            return upgradeLevels[upgradeData] + 1;
         }
 
-        return 0; 
+        return 1; 
     }
 
     public void LevelUp(UpgradeData upgradeData)
@@ -45,7 +45,7 @@ public class LevelDataManager : MonoBehaviour
 
         int currentLevel = upgradeLevels[upgradeData];
 
-        if (currentLevel < maxLevel)
+        if (currentLevel < maxLevel - 1)
         {
             upgradeLevels[upgradeData] = currentLevel + 1; 
         }

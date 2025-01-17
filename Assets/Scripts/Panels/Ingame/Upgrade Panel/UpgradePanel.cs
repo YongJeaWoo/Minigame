@@ -17,7 +17,9 @@ public class UpgradePanel : MonoBehaviour
 
     private UpgradeData upgradeData;
 
-    private string GetTompostParentName(int target)
+    private bool isUpgrade = false;
+
+    private string GetTopmostParentName(int target)
     {
         Transform currentTransform = transform;
         int depth = 0;
@@ -34,8 +36,9 @@ public class UpgradePanel : MonoBehaviour
     public void InitData(UpgradeData upgradeData)
     {
         this.upgradeData = upgradeData;
+        isUpgrade = false;
         int level = LevelDataManager.Instance.GetLevel(upgradeData);
-        levelText.text = $"Level : {level + 1}";
+        levelText.text = $"Level : {level}";
         iconImage.sprite = upgradeData.Icon;
         upgradeText.text = upgradeData.UpgradeText;
         typeText.text = upgradeData.GetTypeText();
@@ -57,9 +60,12 @@ public class UpgradePanel : MonoBehaviour
 
     public void PerformAction()
     {
+        if (isUpgrade) return;
+
+        isUpgrade = true;
         LevelDataManager.Instance.LevelUp(upgradeData);
         upgradeData.ApplyUpgrade();
         Time.timeScale = 1;
-        PopupManager.Instance.RemovePopup(GetTompostParentName(3));
+        PopupManager.Instance.RemovePopup(GetTopmostParentName(3));
     }
 }

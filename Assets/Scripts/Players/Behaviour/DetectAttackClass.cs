@@ -15,7 +15,6 @@ public abstract class DetectAttackClass : MonoBehaviour
     [SerializeField] protected float attackDelay;
     protected float lastAttackTime;
 
-    protected int maxDetectableTargets = 6;
     protected int detectedTargetCount;
 
     protected float attackPoint;
@@ -74,11 +73,11 @@ public abstract class DetectAttackClass : MonoBehaviour
         }
     }
 
-    public void IncreaseMaxTargets()
+    public void IncreaseDetectedTargets(UpgradeData data, int count, int maxCount)
     {
-        if (detectedTargetCount < maxDetectableTargets)
+        if (data != null)
         {
-            detectedTargetCount++;
+            detectedTargetCount += count;
         }
     }
 
@@ -92,4 +91,7 @@ public abstract class DetectAttackClass : MonoBehaviour
 
     public float SetAttackPoint(float value) => attackPoint += (attackPoint * value);
     public float GetAttackPoint() => attackPoint;
+
+    public float SetAttackDelay(float value) => attackDelay -= value;
+    public float SetAttackRange(float value) => attackRange += value;
 }

@@ -38,6 +38,8 @@ public class GetterItem : MonoBehaviour
         ObjectPoolManager.Instance.ReturnToPool(item);
     }
 
+    public float SetAbsorbRange(float value) => absorbRange += value;
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;

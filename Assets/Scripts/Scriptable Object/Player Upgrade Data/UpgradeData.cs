@@ -17,7 +17,7 @@ public abstract class UpgradeData : ScriptableObject
 
     public Sprite Icon { get => icon;}
     public string UpgradeText { get => upgradeText; }
-    public string GetExplainText() => explainText;
+    public virtual string GetExplainText() => explainText;
     public string GetTypeText()
     {
         switch (type)
@@ -32,6 +32,5 @@ public abstract class UpgradeData : ScriptableObject
     }
 
     public abstract float GetValueForLevel(int level);
-    public abstract int GetCountForLevel(int level);
     public abstract void ApplyUpgrade();
 }

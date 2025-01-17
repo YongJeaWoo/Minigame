@@ -48,4 +48,6 @@ public class PlayerMovement : MovementParent
     }
     
     public Vector2 GetLastInputVector() => lastInputVec.normalized;
+
+    public float SetMoveSpeed(float value) => moveSpeed += (moveSpeed * value);
 }
