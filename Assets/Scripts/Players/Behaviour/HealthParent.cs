@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class HealthParent : MonoBehaviour
+public class HealthParent : MonoBehaviour, IHit
 {
     [Header("최대 체력")]
     [SerializeField] protected float maxHealth;

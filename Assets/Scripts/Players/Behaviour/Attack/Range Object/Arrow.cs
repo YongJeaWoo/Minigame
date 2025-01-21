@@ -40,7 +40,7 @@ public class Arrow : MonoBehaviour, IRangeObject
     {
         if (LayerMask.LayerToName(collision.gameObject.layer) == "Enemy")
         {
-            if (collision.TryGetComponent<HealthParent>(out var health))
+            if (collision.TryGetComponent<IHit>(out var health))
             {
                 health.TakeDamage(damaged);
             }

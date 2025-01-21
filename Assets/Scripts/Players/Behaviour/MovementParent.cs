@@ -2,11 +2,8 @@ using UnityEngine;
 
 public abstract class MovementParent : MonoBehaviour
 {
-    [Header("플레이어 움직임 속도")]
+    [Header("움직임 속도")]
     [SerializeField] protected float moveSpeed;
-
-    [Header("그림자 오프셋")]
-    [SerializeField] protected Vector2 shadowOffset;
 
     protected Vector2 direction;
 
@@ -44,5 +41,4 @@ public abstract class MovementParent : MonoBehaviour
 
     public Vector2 GetInputVector() => direction.normalized;
     public Vector2 GetDontMove() => direction = Vector2.zero;
-    public Vector2 GetShadowOffset() => shadowOffset;
 }

@@ -9,8 +9,7 @@ public abstract class AnimationParent : MonoBehaviour
     protected Animator animator;
     protected SpriteRenderer spriteRenderer;
     protected MovementParent movement;
-
-    private GameObject shadowObject;
+    protected ShadowOffset shadowOffset;
 
     protected virtual void Awake()
     {
@@ -19,7 +18,7 @@ public abstract class AnimationParent : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        ShadowObjectActive(true);
+        shadowOffset.ShadowObjectActive(true);
     }
 
     protected virtual void GetComponents()
@@ -27,8 +26,7 @@ public abstract class AnimationParent : MonoBehaviour
         movement = GetComponent<MovementParent>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        shadowObject = transform.GetChild(0).gameObject;
+        shadowOffset = GetComponent<ShadowOffset>();
     }
 
     protected void LateUpdate()
@@ -38,20 +36,6 @@ public abstract class AnimationParent : MonoBehaviour
 
     protected abstract void ChangeAnimation();
 
-    protected void UpdateShadowPosition(Vector2 value)
-    {
-        float offsetX = value.x == 0 ?
-            (spriteRenderer.flipX ? -movement.GetShadowOffset().x : movement.GetShadowOffset().x) :
-            (value.x < 0 ? -movement.GetShadowOffset().x : movement.GetShadowOffset().x);
-
-        float offsetY = movement.GetShadowOffset().y;
-
-        Vector3 playerPos = transform.position;
-        Vector3 shadowPosition = new(playerPos.x + offsetX, playerPos.y + offsetY, playerPos.z);
-
-        shadowObject.transform.position = shadowPosition;
-    }
-
     public virtual Animator IdleAnimator()
     {
         animator.SetTrigger(IdleName);
@@ -60,7 +44,7 @@ public abstract class AnimationParent : MonoBehaviour
 
     public virtual Animator DeadAnimator()
     {
-        ShadowObjectActive(false);
+        shadowOffset.ShadowObjectActive(false);
         animator.SetTrigger(DeadName);
         movement.GetDontMove();
         return animator;
@@ -71,8 +55,6 @@ public abstract class AnimationParent : MonoBehaviour
         animator.SetTrigger(HitName);
         return animator;
     }
-
-    protected void ShadowObjectActive(bool isOn) => shadowObject.SetActive(isOn);
 
     public Animator GetAnimator() => animator;
 }

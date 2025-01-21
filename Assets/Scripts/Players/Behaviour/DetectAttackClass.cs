@@ -60,7 +60,7 @@ public abstract class DetectAttackClass : MonoBehaviour
 
         for (int i = 0; i < Mathf.Min(detectedTargetCount, sortedTargets.Count); i++)
         {
-            HealthParent targetHealth = sortedTargets[i].GetComponent<HealthParent>();
+            IHit targetHealth = sortedTargets[i].GetComponent<IHit>();
             if (targetHealth != null && !targetHealth.GetIsDead())
             {
                 detectedTargets.Add(sortedTargets[i]);
@@ -75,7 +75,7 @@ public abstract class DetectAttackClass : MonoBehaviour
 
     public void IncreaseDetectedTargets(UpgradeData data, int count, int maxCount)
     {
-        if (data != null)
+        if (data != null && count < maxCount)
         {
             detectedTargetCount += count;
         }

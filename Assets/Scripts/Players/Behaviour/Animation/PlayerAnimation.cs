@@ -13,6 +13,6 @@ public class PlayerAnimation : AnimationParent
             spriteRenderer.flipX = inputVec.x < 0;
         }
 
-        UpdateShadowPosition(inputVec);
+        shadowOffset.UpdateShadowPosition(inputVec);
     }
 }
