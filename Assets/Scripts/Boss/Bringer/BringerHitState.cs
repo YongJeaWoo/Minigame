@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class BringerHitState : BossAttackState
 {
     protected bool isHit;
@@ -54,7 +56,17 @@ public class BringerHitState : BossAttackState
 
         if (controller.GetPlayerDistance() <= attackDistance)
         {
-            controller.TransitionToState(BossFSMController.E_State.Attack);
+            var randomValue = Random.Range(0f, 1f);
+
+            if (randomValue <= 0.7f)
+            {
+                controller.TransitionToState(BossFSMController.E_State.Attack);
+            }
+            else
+            {
+                controller.TransitionToState(BossFSMController.E_State.SpecialAttack);
+            }
+            
             return;
         }
         else

@@ -40,10 +40,18 @@ public class EnemySpawner : MonoBehaviour
 
     public void SpawnBoss(int bossIndex)
     {
+        int actualIndex = (bossIndex * 5) + 4;
+
+        if (actualIndex < 0 || actualIndex >= enemiesPrefab.Length)
+        {
+            Debug.LogError("유효하지 않은 보스 몬스터 인덱스입니다.");
+            return;
+        }
+
         spawnBoss = true;
         isSpawning = false;
         StopAllCoroutines();
-        StartCoroutine(SpawnBossCoroutine(bossIndex));
+        StartCoroutine(SpawnBossCoroutine(actualIndex));
     }
 
     public void StopSpawning()
@@ -54,6 +62,7 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator SpawnEnemiesCoroutine()
     {
+        Debug.Log($"일반 적 호출");
         isSpawning = true;
 
         List<GameObject> normalEnemies = GetNormalEnemies();
@@ -93,23 +102,30 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator SpawnBossCoroutine(int bossIndex)
     {
-        if (bossIndex < 1 || bossIndex > enemiesPrefab.Length || bossIndex % 5 != 0)
+        int adjustedIndex = bossIndex;
+
+        if (adjustedIndex < 0 || adjustedIndex >= enemiesPrefab.Length)
         {
-            Debug.LogError("유효하지 않은 보스 몬스터 인덱스입니다.");
+            Debug.LogError($"잘못된 인덱스 접근: {adjustedIndex}");
             yield break;
         }
 
-        GameObject bossPrefab = enemiesPrefab[bossIndex - 1];
-        Transform randomSpawn = GetRandomSpawnLocationWithinBounds(new List<Transform>(spawnsPos));
+        GameObject bossPrefab = enemiesPrefab[adjustedIndex];
+        Debug.Log($"보스 프리팹: {bossPrefab.name}");
 
+        Transform randomSpawn = GetRandomSpawnLocationWithinBounds(new List<Transform>(spawnsPos));
         if (randomSpawn != null)
         {
+            Debug.Log($"보스를 이 위치에서 소환: {randomSpawn.position}");
             ObjectPoolManager.Instance.GetFromPool(bossPrefab, randomSpawn);
+        }
+        else
+        {
+            Debug.LogWarning("보스를 소환할 위치를 찾을 수 없습니다.");
         }
 
         spawnBoss = false;
-
-        yield break; 
+        yield break;
     }
 
     private List<GameObject> GetNormalEnemies()

@@ -38,7 +38,11 @@ public class StageManager : MonoBehaviour
     private PlayerHealth playerHealth;
 
     private float remainingTimer;
+    private float bossSpawnTimer;
+    private int bossIndex;
     private bool isStageEnd;
+    private bool hasSpawnedBoss;
+    private int enemyDeadCount;
 
     private readonly string panelName = $"Input Panel";
 
@@ -46,6 +50,8 @@ public class StageManager : MonoBehaviour
     {
         currentData = data;
         remainingTimer = currentData.stageTimer;
+        bossSpawnTimer = currentData.bossTimer;
+        bossIndex = currentData.bossID;
         UpdateTimer(); 
     }
 
@@ -57,7 +63,10 @@ public class StageManager : MonoBehaviour
     public void StageStart()
     {
         isStageEnd = false;
+        hasSpawnedBoss = false;
         remainingTimer = currentData.stageTimer;
+        bossSpawnTimer = currentData.bossTimer;
+        bossIndex = currentData.bossID;
         playerHealth = PlayerManager.Instance.GetPlayer().GetComponent<PlayerHealth>();
         StartCoroutine(TimeLimitCoroutine());
     }
@@ -77,10 +86,26 @@ public class StageManager : MonoBehaviour
 
             remainingTimer = Mathf.Max(endTime - Time.time, 0);
             UpdateTimer();
+
+            if (!hasSpawnedBoss && remainingTimer <= bossSpawnTimer)
+            {
+                TriggerBossSpawn();
+                hasSpawnedBoss = true;
+            }
+
             yield return null;
         }
 
         OnTimerEnd();
+    }
+
+    private void TriggerBossSpawn()
+    {
+        var spawner = PlayerManager.Instance.GetPlayer().transform.GetChild(1).GetComponent<EnemySpawner>();
+        if (spawner != null)
+        {
+            spawner.SpawnBoss(bossIndex);
+        }
     }
 
     private void OnPlayerDeadEnd()
@@ -101,17 +126,17 @@ public class StageManager : MonoBehaviour
         }
 
         isStageEnd = true;
-
+        
         var panel = PopupManager.Instance.AddPopup(panelName);
         var anyInputPanel = panel.GetComponentInChildren<StageEndAnyInputPanel>();
 
         if (playerHealth.GetIsDead())
         {
-            anyInputPanel.SetInfoText($"플레이어가 죽었습니다.");
+            anyInputPanel.SetInfoText($"플레이어가 죽었습니다.", string.Empty, false);
         }
         else
         {
-            anyInputPanel.SetInfoText($"게임을 클리어 했습니다.");
+            anyInputPanel.SetInfoText($"게임을 클리어 했습니다.", $"적을 잡은 수 : <color=#138EFF>{enemyDeadCount}</color>", true);
         }
 
         anyInputPanel.OnAnyInputKey += GoTitle;
@@ -193,5 +218,11 @@ public class StageManager : MonoBehaviour
         LoadingManager.LoadScene("Title");
     }
 
+    public void IncreaseEnemyDeadCount()
+    {
+        enemyDeadCount++;
+    }
+
+    public float GetRemaingTime() => remainingTimer;
     public bool GetIsStageEnd() => isStageEnd;
 }

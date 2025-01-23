@@ -9,6 +9,8 @@ public class StageEndAnyInputPanel : MonoBehaviour
 
     [Header("정보 텍스트")]
     [SerializeField] private TextMeshProUGUI infoText;
+    [Header("잡은 적의 수")]
+    [SerializeField] private TextMeshProUGUI enemyCountText;
 
     private bool isInputKey = false;
 
@@ -62,5 +64,17 @@ public class StageEndAnyInputPanel : MonoBehaviour
         return anim.IsName(name) && anim.normalizedTime >= 1f;
     }
 
-    public string SetInfoText(string value) => infoText.text = value;
+    public (string infoTextValue, string enemyCountTextValue) SetInfoText(string infoValue, string countValue, bool isCounting)
+    {
+        infoText.text = infoValue;
+        enemyCountText.text = countValue;
+        enemyCountText.gameObject.SetActive(isCounting);
+
+        if (isCounting)
+        {
+            return (infoText.text, enemyCountText.text);
+        }
+
+        return (infoText.text, null);
+    }
 }

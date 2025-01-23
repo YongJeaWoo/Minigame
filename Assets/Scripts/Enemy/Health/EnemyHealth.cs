@@ -50,6 +50,12 @@ public class EnemyHealth : HealthParent
     protected override void Death()
     {
         base.Death();
+
+        if (StageManager.Instance != null)
+        {
+            StageManager.Instance.IncreaseEnemyDeadCount();
+        }
+
         StartCoroutine(WaitForDeathAnimation());
     }
 
