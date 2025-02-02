@@ -36,6 +36,7 @@ public class LoadingManager : MonoBehaviour
     private IEnumerator DelayStartCoroutine()
     {
         // TODO : UIManager가 파괴되지 않는 경우 GUI 자체를 끄는 곳을 여기서 수행 해야 함
+        AudioManager.Instance.LoadUIButtonToggle(false);
 
         float delayTime = Mathf.Lerp(1.0f, 1.5f, Mathf.InverseLerp(0f, 1f, fakeProgress)); 
         yield return new WaitForSeconds(delayTime);
@@ -84,6 +85,7 @@ public class LoadingManager : MonoBehaviour
                 op.allowSceneActivation = true;
 
                 // TODO : UIManager가 파괴되지 않는 경우 GUI 자체를 키는 곳을 여기서 수행 해야 함
+                AudioManager.Instance.LoadUIButtonToggle(true);
             }
 
             yield return null;

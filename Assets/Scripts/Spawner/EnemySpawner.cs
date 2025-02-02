@@ -12,7 +12,8 @@ public class EnemySpawner : MonoBehaviour
     private bool isSpawning = false;
     private bool spawnBoss = false;
 
-    private WaitForSeconds spawnInterval = new(5);
+    private int randomSpawnTime;
+    private WaitForSeconds spawnInterval;
 
     private Collider2D border;
 
@@ -62,8 +63,10 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator SpawnEnemiesCoroutine()
     {
-        Debug.Log($"일반 적 호출");
         isSpawning = true;
+
+        randomSpawnTime = Random.Range(5, 8);
+        spawnInterval = new(randomSpawnTime);
 
         List<GameObject> normalEnemies = GetNormalEnemies();
         if (normalEnemies.Count == 0)
@@ -111,12 +114,10 @@ public class EnemySpawner : MonoBehaviour
         }
 
         GameObject bossPrefab = enemiesPrefab[adjustedIndex];
-        Debug.Log($"보스 프리팹: {bossPrefab.name}");
 
         Transform randomSpawn = GetRandomSpawnLocationWithinBounds(new List<Transform>(spawnsPos));
         if (randomSpawn != null)
         {
-            Debug.Log($"보스를 이 위치에서 소환: {randomSpawn.position}");
             ObjectPoolManager.Instance.GetFromPool(bossPrefab, randomSpawn);
         }
         else

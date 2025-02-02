@@ -8,6 +8,11 @@ public class StageController : MonoBehaviour
     [SerializeField] private Collider2D confinerBorder;
     [SerializeField] private CinemachineVirtualCamera cam;
 
+    [Space(15f)]
+    [SerializeField] private AudioClip levelUpClip;
+    [SerializeField] private AudioClip normalClip;
+    [SerializeField] private AudioClip bossClip;
+
     private GameObject player;
 
     private readonly string Levelup = $"Level Up Panel";
@@ -21,6 +26,7 @@ public class StageController : MonoBehaviour
 
     private void StageEntry()
     {
+        AudioManager.Instance.PlayBGM(normalClip);
         PlayerManager.Instance.InstantPlayer();
         player = PlayerManager.Instance.GetPlayer();
         cam.Follow = player.transform;
@@ -49,7 +55,6 @@ public class StageController : MonoBehaviour
         {
             playerExp.OnLevelUp -= LevelUpPopup;
         }
-
     }
 
     private IEnumerator WaitSpawnEnemiesCoroutine()
@@ -59,6 +64,7 @@ public class StageController : MonoBehaviour
 
         yield return StageManager.Instance.FadeMethod(1, 0);
         StageManager.Instance.StageStart();
+
         yield return new WaitForSeconds(1f);
         SpawnEnemies();
 
@@ -75,7 +81,16 @@ public class StageController : MonoBehaviour
 
     private void LevelUpPopup()
     {
+        AudioManager.Instance.PlaySFX(levelUpClip);
         PopupManager.Instance.AddPopup(Levelup);
+    }
+
+    public void BossSoundPlay()
+    {
+        AudioManager.Instance.StopBGM(0.3f, () =>
+        {
+            AudioManager.Instance.PlayBGM(bossClip);
+        });
     }
 
     public Collider2D GetConfinerBorder() => confinerBorder;

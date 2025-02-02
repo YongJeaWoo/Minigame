@@ -5,6 +5,7 @@ public class PlayerMovement : MovementParent
     private Vector2 lastInputVec;
 
     private PlayerData playerData;
+    private CoinUpgradeValue upgradeValue;
 
     private void Start()
     {
@@ -15,12 +16,21 @@ public class PlayerMovement : MovementParent
     {
         base.GetComponents();
         playerData = GetComponent<PlayerInfoData>().GetPlayerData();
+        upgradeValue = GetComponent<CoinUpgradeValue>();
     }
 
     private void InitValue()
     {
+        BaseStatePlayer();
+    }
+
+    private void BaseStatePlayer()
+    {
         lastInputVec = Vector2.right;
-        moveSpeed = playerData.GetMoveSpeed();
+        float baseMovement = playerData.GetMoveSpeed();
+        float upgradeMovement = (upgradeValue != null) ? upgradeValue.GetMovementUpgrade() : 0f;
+
+        moveSpeed = baseMovement + upgradeMovement;
     }
 
     private void Update()

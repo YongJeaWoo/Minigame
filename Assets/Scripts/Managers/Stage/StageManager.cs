@@ -101,9 +101,12 @@ public class StageManager : MonoBehaviour
 
     private void TriggerBossSpawn()
     {
+        StageController stageController = FindObjectOfType<StageController>();
+
         var spawner = PlayerManager.Instance.GetPlayer().transform.GetChild(1).GetComponent<EnemySpawner>();
         if (spawner != null)
         {
+            stageController.BossSoundPlay();
             spawner.SpawnBoss(bossIndex);
         }
     }

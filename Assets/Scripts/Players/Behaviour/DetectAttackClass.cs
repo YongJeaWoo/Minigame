@@ -5,24 +5,25 @@ public abstract class DetectAttackClass : MonoBehaviour
 {
     [Header("타겟 레이어")]
     [SerializeField] protected LayerMask targetLayer;
-    [Header("공격 범위")]
-    [SerializeField] protected float attackRange = 1.5f;
     [Header("탐지 위치 값")]
     [SerializeField] protected Vector3 detectPos;
+    [Header("공격 사운드")]
+    [SerializeField] protected AudioClip attackSoundClip;
     [Header("생성할 공격용 프리팹")]
     [SerializeField] protected GameObject attackPrefab;
-    [Header("공격 딜레이")]
-    [SerializeField] protected float attackDelay;
     protected float lastAttackTime;
 
     protected int detectedTargetCount;
 
     protected float attackPoint;
+    protected float attackRange;
+    protected float attackDelay;
 
     protected List<Collider2D> detectedTargets = new List<Collider2D>();
 
     protected PlayerHealth health;
     protected PlayerData playerData;
+    protected CoinUpgradeValue upgradeValue;
 
     protected virtual void Start()
     {
@@ -31,6 +32,7 @@ public abstract class DetectAttackClass : MonoBehaviour
 
     protected virtual void Update()
     {
+        Debug.Log($"Attack {attackPoint}");
         DetectTargets();
     }
 
@@ -38,7 +40,26 @@ public abstract class DetectAttackClass : MonoBehaviour
     {
         health = GetComponent<PlayerHealth>();
         playerData = GetComponent<PlayerInfoData>().GetPlayerData();
-        attackPoint = playerData.GetAttackPoint();
+        upgradeValue = GetComponent<CoinUpgradeValue>();
+
+        BaseStatePlayer();
+    }
+
+    private void BaseStatePlayer()
+    {
+        float baseAttackPoint = playerData.GetAttackPoint();
+        float baseAttackDelay = playerData.GetAttackDelay();
+        float baseAttackRange = playerData.GetAttackRange();
+
+        float upgradeAttackPoint = (upgradeValue != null) ? upgradeValue.GetAttackPointUpgrade() : 0f;
+        float upgradeAttackDelay = (upgradeValue != null) ? upgradeValue.GetAttackDelayUpgrade() : 0f;
+        float upgradeAttackRange = (upgradeValue != null) ? upgradeValue.GetAttackRangeUpgrade() : 0f;
+
+        attackPoint = baseAttackPoint + upgradeAttackPoint;
+        attackDelay = baseAttackDelay - upgradeAttackDelay;
+        attackRange = baseAttackRange + upgradeAttackRange;
+
+        Debug.Log($"플레이어의 초기 스탯 - 공격력: {attackPoint}, 공격 딜레이: {attackDelay}, 공격 범위: {attackRange}");
     }
 
     protected virtual void DetectTargets()
