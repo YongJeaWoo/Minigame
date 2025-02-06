@@ -21,7 +21,7 @@ public class AudioManager : MonoBehaviour
         }
         else
         {
-            Destroy(Instance);
+            Destroy(gameObject);
         }
 
         DontDestroyOnLoad(gameObject);
@@ -125,5 +125,6 @@ public class AudioManager : MonoBehaviour
         settingControl.ToggleLoadButton(isOn);
     }
 
+    public SettingControl GetSettingControl() => settingControl;
     public VolumeController GetVolumeController() => volumeController;
 }

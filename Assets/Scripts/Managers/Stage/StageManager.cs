@@ -142,6 +142,8 @@ public class StageManager : MonoBehaviour
             anyInputPanel.SetInfoText($"게임을 클리어 했습니다.", $"적을 잡은 수 : <color=#138EFF>{enemyDeadCount}</color>", true);
         }
 
+        PlayerManager.Instance.SaveCoin();
+
         anyInputPanel.OnAnyInputKey += GoTitle;
     }
 

@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour
     private GameObject player;
     private GameObject playerPrefab;
     private UpgradeDataControl upgradeControl;
+    private CoinData coinData;
 
     #region Singleton
     private void Awake()
@@ -28,13 +29,15 @@ public class PlayerManager : MonoBehaviour
         DoAwake();
         DontDestroyOnLoad(gameObject);
     }
-    #endregion
-
     private void DoAwake()
     {
         upgradeControl = GetComponent<UpgradeDataControl>();
+        coinData = GetComponent<CoinData>();
+        LoadCoin();
     }
-
+    #endregion
+    
+    #region SetPlayer
     public void SetPlayer(PlayerObjectData player)
     {
         playerPrefab = player.GetPlayerPrefab();
@@ -64,6 +67,29 @@ public class PlayerManager : MonoBehaviour
             }
         }
     }
+    #endregion
+
+    #region Coin Data
+    public void SaveCoin()
+    {
+        coinData.SaveCoin();
+    }
+
+    public void LoadCoin()
+    {
+        coinData.LoadCoin();
+    }
+
+    public void UpdateCoin(int amount)
+    {
+        coinData.UpdateCoin(amount);
+    }
+
+    public int GetMyHasCoin()
+    {
+        return coinData.GetMyCoin();
+    }
+    #endregion
 
     public UpgradeDataControl GetUpgradeControl() => upgradeControl;
     public GameObject GetPlayer() => player;

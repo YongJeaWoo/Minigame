@@ -31,11 +31,6 @@ public class InteractionPanel : MonoBehaviour
         }
     }
 
-    public void Init(Animator animator)
-    {
-        this.animator = animator;
-    }
-
     public void ExitAnyClick(BaseEventData eventData)
     {
         PointerEventData pointerEventData = eventData as PointerEventData;

@@ -64,6 +64,7 @@ public class StageController : MonoBehaviour
 
         yield return StageManager.Instance.FadeMethod(1, 0);
         StageManager.Instance.StageStart();
+        AudioManager.Instance.LoadUIButtonToggle(true);
 
         yield return new WaitForSeconds(1f);
         SpawnEnemies();

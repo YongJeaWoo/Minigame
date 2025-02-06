@@ -20,8 +20,10 @@ public class PopupManager : MonoBehaviour
         }
         else
         {
-            Destroy(Instance);
+            Destroy(gameObject);
         }
+
+        DontDestroyOnLoad(gameObject);
     }
     #endregion   
 

@@ -32,6 +32,9 @@ public class VolumeController : MonoBehaviour
         settingObject.SetActive(!isActive);
         IsSettingOpen = !isActive;
 
+        var controller = AudioManager.Instance.GetSettingControl();
+        controller.ButtonsBehaviour();
+
         if (isActive)
         {
             Time.timeScale = 1;
