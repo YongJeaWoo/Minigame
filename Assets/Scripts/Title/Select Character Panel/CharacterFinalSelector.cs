@@ -13,17 +13,27 @@ public class CharacterFinalSelector : MonoBehaviour
         InitSelectPanel();
     }
 
+    private void OnDisable()
+    {
+        DisablePanel();
+    }
+
     private void InitSelectPanel()
+    {
+        DisablePanel();
+
+        if (characterPanels.Length > 0)
+        {
+            SetSelectedCharacter(characterPanels[0].GetPlayerData(), characterPanels[0]);
+        }
+    }
+
+    private void DisablePanel()
     {
         foreach (var panel in characterPanels)
         {
             panel.SetSelected(this);
             panel.ResetColor();
-        }
-
-        if (characterPanels.Length > 0)
-        {
-            SetSelectedCharacter(characterPanels[0].GetPlayerData(), characterPanels[0]);
         }
     }
 

@@ -3,13 +3,7 @@ using UnityEngine.UI;
 
 public class SettingControl : MonoBehaviour
 {
-    [SerializeField] private GameObject settingButton;
     [SerializeField] private Button[] buttons;
-
-    public void ToggleLoadButton(bool isOn)
-    {
-        settingButton.SetActive(isOn);
-    }
 
     public void ButtonsBehaviour()
     {
@@ -25,6 +19,4 @@ public class SettingControl : MonoBehaviour
                 break;
         }
     }
-
-    public GameObject GetSettingButton() => settingButton;
 }

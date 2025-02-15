@@ -21,16 +21,44 @@ public class StageController : MonoBehaviour
 
     private void Start()
     {
-        StageEntry();
+        SetStageEnter();
+
+        if (!PlayerManager.Instance.GetTutorials()[1])  
+        {
+            StartCoroutine(StartSecondTutorial());
+        }
+        else
+        {
+            StageStart();
+        }
     }
 
-    private void StageEntry()
+    private IEnumerator StartSecondTutorial()
+    {
+        var tutorialController = GetComponent<TutorialController>();
+        tutorialController.OnTutorialCompleted += OnTutorialCompleted;
+        tutorialController.TutorialStart();
+
+        yield return new WaitUntil(() => PlayerManager.Instance.GetTutorials()[1]);
+    }
+
+    private void OnTutorialCompleted()
+    {
+        PlayerManager.Instance.SetTutorials(1); 
+        StageStart();
+    }
+
+    private void SetStageEnter()
     {
         AudioManager.Instance.PlayBGM(normalClip);
         PlayerManager.Instance.InstantPlayer();
         player = PlayerManager.Instance.GetPlayer();
         cam.Follow = player.transform;
         cam.LookAt = player.transform;
+    }
+
+    private void StageStart()
+    {
         EventRegister(true);
         StartCoroutine(WaitSpawnEnemiesCoroutine());
     }
@@ -64,7 +92,6 @@ public class StageController : MonoBehaviour
 
         yield return StageManager.Instance.FadeMethod(1, 0);
         StageManager.Instance.StageStart();
-        AudioManager.Instance.LoadUIButtonToggle(true);
 
         yield return new WaitForSeconds(1f);
         SpawnEnemies();

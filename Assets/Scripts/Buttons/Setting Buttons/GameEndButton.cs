@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class GameEndButton : MonoBehaviour
 {
+    private readonly string GameEndPanel = $"Game End Panel";
+
     public void GameEndButtonClick()
     {
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #else
-            Application.Quit();
-        #endif
+        PopupManager.Instance.AddPopup(GameEndPanel);
     }
 }

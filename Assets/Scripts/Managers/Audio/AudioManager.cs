@@ -88,7 +88,7 @@ public class AudioManager : MonoBehaviour
         audioChannels[SfxVolumeString] = new AudioChannel(transform, "SFX_Channel", 10);
     }
 
-    public void PlayBGM(AudioClip clip, bool loop = true, float volume = 0.5f, float fadeDuration = 0.5f)
+    public void PlayBGM(AudioClip clip, bool loop = true, float volume = 1f, float fadeDuration = 0.5f)
     {
         var channel = audioChannels[BgmVolumeString];
         channel.Play(clip, loop, volume * BGMVolume, fadeDuration);
@@ -108,7 +108,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlaySFX(AudioClip clip, bool loop = false, float volume = 0.5f)
+    public void PlaySFX(AudioClip clip, bool loop = false, float volume = 1f)
     {
         var channel = audioChannels[SfxVolumeString];
         channel.Play(clip, loop, volume * SFXVolume);
@@ -118,11 +118,6 @@ public class AudioManager : MonoBehaviour
     {
         var channel = audioChannels[SfxVolumeString];
         channel.Stop(clip);
-    }
-    
-    public void LoadUIButtonToggle(bool isOn)
-    {
-        settingControl.ToggleLoadButton(isOn);
     }
 
     public SettingControl GetSettingControl() => settingControl;

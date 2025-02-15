@@ -1,17 +1,14 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class TitleController : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI titleText;
+    [SerializeField] private GameObject titleCollection;
     [SerializeField] private GameObject selectCharacterPanel;
     [SerializeField] private GameObject publicUpgradePanel;
     [SerializeField] private CharacterFinalSelector characterFinalSelector;
     [SerializeField] private AudioClip titleClip;
-    [SerializeField] private KeyCode[] inputKeys;
 
-    private bool isAnyKeyDown = false;
+    private bool isStartButtonClicked = false;
 
     private void Start()
     {
@@ -20,44 +17,32 @@ public class TitleController : MonoBehaviour
 
     private void Update()
     {
-        HandleTitleText();
-        AnyInputKey();
+        StartFirstTutorial();
     }
 
-    #region Title Panel Active
-    private void AnyInputKey()
+    private void StartFirstTutorial()
     {
-        if (!publicUpgradePanel.activeSelf)
+        if (!PlayerManager.Instance.GetTutorials()[0] && publicUpgradePanel.activeSelf)
         {
-            foreach (var key in inputKeys)
-            {
-                if (Input.GetKeyDown(key))
-                {
-                    if (Input.GetKeyDown(inputKeys[0]) && IsPointerOverUI())
-                        return;
-
-                    isAnyKeyDown = true;
-                    TitleControlObject(isAnyKeyDown);
-                    break;
-                }
-            }
+            GetComponent<TutorialController>().TutorialStart();
+            PlayerManager.Instance.SetTutorials(0);
         }
     }
 
-    private void HandleTitleText()
+    #region Title Panel Active
+    public void StartButton()
     {
-        titleText.gameObject.SetActive(!publicUpgradePanel.activeSelf && !isAnyKeyDown);
-    }
-
-    private bool IsPointerOverUI()
-    {
-        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+        if (!publicUpgradePanel.activeSelf)
+        {
+            isStartButtonClicked = true;
+            TitleControlObject(isStartButtonClicked);
+        }
     }
 
     public void TitleControlObject(bool isOn)
     {
-        titleText.gameObject.SetActive(!isOn);
         selectCharacterPanel.SetActive(isOn);
+        titleCollection.SetActive(!isOn);
     }
 
     public void GoInGame()
@@ -71,12 +56,12 @@ public class TitleController : MonoBehaviour
 
     public void ReturnSelectPanel()
     {
-        isAnyKeyDown = false;
+        isStartButtonClicked = false;
         characterFinalSelector.GetSelectedCharacterPanel().ResetColor();
-        TitleControlObject(isAnyKeyDown);
+        TitleControlObject(isStartButtonClicked);
     }
     #endregion
-
-    public bool SetAnyKeyDown(bool isOn) => isAnyKeyDown = isOn;
-    public bool GetAnyKeyDown() => isAnyKeyDown;
+    
+    public bool SetAnyKeyDown(bool isOn) => isStartButtonClicked = isOn;
+    public bool GetAnyKeyDown() => isStartButtonClicked;
 }

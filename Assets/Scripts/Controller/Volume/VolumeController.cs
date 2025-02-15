@@ -34,15 +34,6 @@ public class VolumeController : MonoBehaviour
 
         var controller = AudioManager.Instance.GetSettingControl();
         controller.ButtonsBehaviour();
-
-        if (isActive)
-        {
-            Time.timeScale = 1;
-        }
-        else
-        {
-            Time.timeScale = 0;
-        }
     }
 
     private void InitSliders()

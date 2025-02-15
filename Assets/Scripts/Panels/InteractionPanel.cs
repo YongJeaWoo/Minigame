@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,9 +8,6 @@ public class InteractionPanel : MonoBehaviour
     protected readonly string isOpenText = $"isOpen";
 
     [SerializeField] protected Button exitButton;
-
-    [Header("정보 텍스트")]
-    [SerializeField] private TextMeshProUGUI infoText;
 
     protected Animator animator;
 
@@ -33,16 +29,14 @@ public class InteractionPanel : MonoBehaviour
 
     public void ExitAnyClick(BaseEventData eventData)
     {
-        PointerEventData pointerEventData = eventData as PointerEventData;
-        if (pointerEventData == null) return;
+        if (eventData is not PointerEventData pointerEventData) return;
 
         RectTransform panelRect = transform.GetComponent<RectTransform>();
-
         bool outSidePanel = !RectTransformUtility.RectangleContainsScreenPoint(panelRect, pointerEventData.position);
 
         if (outSidePanel)
         {
-            StartCoroutine(RemovePopupCoroutine());
+            ExitButton();
         }
     }
 
@@ -74,6 +68,4 @@ public class InteractionPanel : MonoBehaviour
         var anim = animator.GetCurrentAnimatorStateInfo(0);
         return anim.IsName(name) && anim.normalizedTime >= 1f;
     }
-
-    public string SetInfoText(string value) => infoText.text = value;
 }

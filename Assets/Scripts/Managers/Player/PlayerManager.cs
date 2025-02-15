@@ -9,6 +9,8 @@ public class PlayerManager : MonoBehaviour
     private UpgradeDataControl upgradeControl;
     private CoinData coinData;
 
+    private bool[] tutorialsEnd;
+
     #region Singleton
     private void Awake()
     {
@@ -29,13 +31,14 @@ public class PlayerManager : MonoBehaviour
         DoAwake();
         DontDestroyOnLoad(gameObject);
     }
+    #endregion
     private void DoAwake()
     {
         upgradeControl = GetComponent<UpgradeDataControl>();
         coinData = GetComponent<CoinData>();
         LoadCoin();
+        tutorialsEnd = new bool[2];
     }
-    #endregion
     
     #region SetPlayer
     public void SetPlayer(PlayerObjectData player)
@@ -91,6 +94,14 @@ public class PlayerManager : MonoBehaviour
     }
     #endregion
 
+    public void SetTutorials(int index)
+    {
+        if (index >= 0 && index < tutorialsEnd.Length)
+        {
+            tutorialsEnd[index] = true;
+        }
+    }
+    public bool[] GetTutorials() => tutorialsEnd;
     public UpgradeDataControl GetUpgradeControl() => upgradeControl;
     public GameObject GetPlayer() => player;
 }

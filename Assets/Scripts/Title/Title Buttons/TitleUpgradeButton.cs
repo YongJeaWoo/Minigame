@@ -1,15 +1,10 @@
 using UnityEngine;
 
-public class UpgradePanelButton : BehaviourButton
+public class TitleUpgradeButton : TitleCommonButton
 {
     [SerializeField] private GameObject publicUpgradePanel;
 
-    protected override void Start()
-    {
-        base.Start();
-    }
-
-    public override void SetBehaviour()
+    public override void ButtonClickedBehaviour()
     {
         bool canOpen = !publicUpgradePanel.activeSelf;
         publicUpgradePanel.SetActive(canOpen);
