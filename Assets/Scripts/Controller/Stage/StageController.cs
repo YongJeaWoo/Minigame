@@ -109,7 +109,11 @@ public class StageController : MonoBehaviour
 
     private void LevelUpPopup()
     {
-        AudioManager.Instance.PlaySFX(levelUpClip);
+        if (levelUpClip != null)
+        {
+            AudioManager.Instance.PlaySFX(levelUpClip);
+        }
+
         PopupManager.Instance.AddPopup(Levelup);
     }
 

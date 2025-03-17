@@ -9,6 +9,8 @@ public class EnemySpawner : MonoBehaviour
     [Header("적 생성 위치")]
     [SerializeField] private Transform[] spawnsPos;
 
+    private readonly string bossEmergencePanel = $"Boss Emergence Panel";
+
     private bool isSpawning = false;
     private bool spawnBoss = false;
 
@@ -105,6 +107,8 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator SpawnBossCoroutine(int bossIndex)
     {
+        var bossPanel = PopupManager.Instance.AddPopup(bossEmergencePanel);
+
         int adjustedIndex = bossIndex;
 
         if (adjustedIndex < 0 || adjustedIndex >= enemiesPrefab.Length)
@@ -124,6 +128,9 @@ public class EnemySpawner : MonoBehaviour
         {
             Debug.LogWarning("보스를 소환할 위치를 찾을 수 없습니다.");
         }
+
+        yield return new WaitForSeconds(2f);
+        PopupManager.Instance.RemovePopup(bossPanel.name);
 
         spawnBoss = false;
         yield break;

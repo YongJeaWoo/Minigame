@@ -44,7 +44,7 @@ public class StageManager : MonoBehaviour
     private bool hasSpawnedBoss;
     private int enemyDeadCount;
 
-    private readonly string panelName = $"Input Panel";
+    private readonly string timeEndPanel = $"Input Panel";
 
     public void SetStageData(StageData data)
     {
@@ -130,7 +130,7 @@ public class StageManager : MonoBehaviour
 
         isStageEnd = true;
         
-        var panel = PopupManager.Instance.AddPopup(panelName);
+        var panel = PopupManager.Instance.AddPopup(timeEndPanel);
         var anyInputPanel = panel.GetComponentInChildren<StageEndAnyInputPanel>();
 
         if (playerHealth.GetIsDead())
