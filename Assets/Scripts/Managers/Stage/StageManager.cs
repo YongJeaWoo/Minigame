@@ -44,7 +44,7 @@ public class StageManager : MonoBehaviour
     private bool hasSpawnedBoss;
     private int enemyDeadCount;
 
-    private readonly string timeEndPanel = $"Input Panel";
+    private readonly string panelName = $"Input Panel";
 
     public void SetStageData(StageData data)
     {
@@ -130,7 +130,7 @@ public class StageManager : MonoBehaviour
 
         isStageEnd = true;
         
-        var panel = PopupManager.Instance.AddPopup(timeEndPanel);
+        var panel = PopupManager.Instance.AddPopup(panelName);
         var anyInputPanel = panel.GetComponentInChildren<StageEndAnyInputPanel>();
 
         if (playerHealth.GetIsDead())
@@ -139,12 +139,10 @@ public class StageManager : MonoBehaviour
         }
         else
         {
-            anyInputPanel.SetInfoText($"게임을 클리어 했습니다.", $"적을 잡은 수 : <color=#138EFF>{enemyDeadCount}</color>", true);
+            anyInputPanel.SetInfoText($"게임을 클리어 했습니다.", $"적을 잡은 수 : <color=#F0E6C2>{enemyDeadCount}</color>", true);
         }
 
         PlayerManager.Instance.SaveCoin();
-
-        anyInputPanel.OnAnyInputKey += GoTitle;
     }
 
     private void UpdateTimer()

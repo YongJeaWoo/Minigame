@@ -64,6 +64,4 @@ public class VolumeController : MonoBehaviour
         control.percentText.text = $"{Mathf.RoundToInt(value * 100)}%";
         control.SetVolumeAction?.Invoke(value);
     }
-
-    public GameObject GetSettingObject() => settingObject;
 }

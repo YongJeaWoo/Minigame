@@ -4,6 +4,10 @@ public class TitleHelpButton : TitleCommonButton
 
     public override void ButtonClickedBehaviour()
     {
-        var instant = PopupManager.Instance.AddPopup(HelpPanelName);
+        if (buttonClickSound != null)
+        {
+            AudioManager.Instance.PlaySFX(buttonClickSound);
+        }
+        PopupManager.Instance.AddPopup(HelpPanelName);
     }
 }

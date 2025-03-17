@@ -46,7 +46,6 @@ public class BringerIdleState : BossAttackState
     {
         time += Time.deltaTime;
         AttackPlayer();
-
     }
 
     private void AttackPlayer()

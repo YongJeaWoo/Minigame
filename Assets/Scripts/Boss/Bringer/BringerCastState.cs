@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BringerCastState : BossAttackState
@@ -85,8 +86,7 @@ public class BringerCastState : BossAttackState
         {
             hintObj.transform.position = position;
 
-            var hintRenderer = hintObj.GetComponent<SpriteRenderer>();
-            if (hintRenderer != null)
+            if (hintObj.TryGetComponent<SpriteRenderer>(out var hintRenderer))
             {
                 var collider = castPrefab.GetComponentInChildren<BoxCollider2D>();
                 if (collider != null)
@@ -96,14 +96,21 @@ public class BringerCastState : BossAttackState
                 }
             }
 
-            StartCoroutine(HideHintAfterTime(hintObj, hintWaitTime));
+            if (hintObj.TryGetComponent<Animator>(out var animator))
+            {
+                AnimationClip clip = animator.runtimeAnimatorController.animationClips[0];
+                float animationDuration = clip.length;
+
+                hintWaitTime = new WaitForSeconds(animationDuration);
+
+                StartCoroutine(ExpandHint(hintObj, hintWaitTime));
+            }
         }
     }
 
-    private IEnumerator HideHintAfterTime(GameObject hintObj, WaitForSeconds waitTime)
+    private IEnumerator ExpandHint(GameObject hintObj, WaitForSeconds waitTime)
     {
         yield return waitTime;
-
         ObjectPoolManager.Instance.ReturnToPool(hintObj);
     }
 

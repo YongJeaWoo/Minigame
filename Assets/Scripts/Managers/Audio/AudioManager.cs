@@ -74,11 +74,11 @@ public class AudioManager : MonoBehaviour
     {
         if (audioChannels.ContainsKey(BgmVolumeString))
         {
-            audioChannels[BgmVolumeString].SetVolume(masterVolume * bgmVolume);
+            audioChannels[BgmVolumeString].SetVolume(masterVolume * BGMVolume);
         }
         if (audioChannels.ContainsKey(SfxVolumeString))
         {
-            audioChannels[SfxVolumeString].SetVolume(masterVolume * sfxVolume);
+            audioChannels[SfxVolumeString].SetVolume(masterVolume * SFXVolume);
         }
     }
 
@@ -88,10 +88,11 @@ public class AudioManager : MonoBehaviour
         audioChannels[SfxVolumeString] = new AudioChannel(transform, "SFX_Channel", 10);
     }
 
-    public void PlayBGM(AudioClip clip, bool loop = true, float volume = 1f, float fadeDuration = 0.5f)
+    public void PlayBGM(AudioClip clip, bool loop = true, float? volume = null, float fadeDuration = 0.5f)
     {
         var channel = audioChannels[BgmVolumeString];
-        channel.Play(clip, loop, volume * BGMVolume, fadeDuration);
+        float finalVolume = (volume ?? bgmVolume) * masterVolume;
+        channel.Play(clip, loop, finalVolume, fadeDuration);
     }
 
     public void StopBGM(float fadeDuration = 0.5f, Action onComplete = null)
@@ -108,10 +109,11 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlaySFX(AudioClip clip, bool loop = false, float volume = 1f)
+    public void PlaySFX(AudioClip clip, bool loop = false, float? volume = null)
     {
         var channel = audioChannels[SfxVolumeString];
-        channel.Play(clip, loop, volume * SFXVolume);
+        float finalVolume = (volume ?? sfxVolume) * masterVolume;
+        channel.Play(clip, loop, finalVolume);
     }
 
     public void StopSFX(AudioClip clip)

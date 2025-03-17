@@ -7,6 +7,7 @@ public class TitleController : MonoBehaviour
     [SerializeField] private GameObject publicUpgradePanel;
     [SerializeField] private CharacterFinalSelector characterFinalSelector;
     [SerializeField] private AudioClip titleClip;
+    [SerializeField] private AudioClip buttonClickSound;
 
     private bool isStartButtonClicked = false;
 
@@ -35,6 +36,7 @@ public class TitleController : MonoBehaviour
         if (!publicUpgradePanel.activeSelf)
         {
             isStartButtonClicked = true;
+            AudioManager.Instance.PlaySFX(buttonClickSound);
             TitleControlObject(isStartButtonClicked);
         }
     }

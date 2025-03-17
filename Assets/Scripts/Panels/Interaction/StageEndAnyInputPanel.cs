@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -11,12 +10,9 @@ public class StageEndAnyInputPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI infoText;
     [Header("잡은 적의 수")]
     [SerializeField] private TextMeshProUGUI enemyCountText;
-
-    private bool isInputKey = false;
+    [SerializeField] private GameObject tryButton;
 
     private Animator animator;
-
-    public event Action OnAnyInputKey;
 
     private void Awake()
     {
@@ -24,21 +20,18 @@ public class StageEndAnyInputPanel : MonoBehaviour
         animator.SetBool(isOpenText, true);
     }
 
-    private void Update()
+    public void RetryGame()
     {
-        InputKey();
+        PlayerManager.Instance.ApplyUpgradeToPlayer(PlayerManager.Instance.GetPlayer());
+        StartCoroutine(RemovePopupCoroutine("Game"));
     }
 
-    private void InputKey()
+    public void ExitTitleGame()
     {
-        if (Input.anyKeyDown && !isInputKey)
-        {
-            isInputKey = true;
-            StartCoroutine(RemovePopupCoroutine());
-        }
+        StartCoroutine(RemovePopupCoroutine("Title"));
     }
 
-    protected IEnumerator RemovePopupCoroutine()
+    protected IEnumerator RemovePopupCoroutine(string sceneName)
     {
         if (animator != null)
         {
@@ -51,11 +44,10 @@ public class StageEndAnyInputPanel : MonoBehaviour
         }
 
         var parentName = transform.parent.name;
-        OnAnyInputKey?.Invoke();
 
+        AudioManager.Instance.StopBGM();
         PopupManager.Instance.RemovePopup(parentName);
-
-        yield break;
+        LoadingManager.LoadScene(sceneName);
     }
 
     protected bool IsAnimatorFinished(Animator animator, string name)
@@ -72,9 +64,11 @@ public class StageEndAnyInputPanel : MonoBehaviour
 
         if (isCounting)
         {
+            tryButton.SetActive(true);
             return (infoText.text, enemyCountText.text);
         }
 
+        tryButton.SetActive(false);
         return (infoText.text, null);
     }
 }

@@ -9,7 +9,7 @@ public class EnemySpawner : MonoBehaviour
     [Header("적 생성 위치")]
     [SerializeField] private Transform[] spawnsPos;
 
-    private readonly string bossEmergencePanel = $"Boss Emergence Panel";
+    private readonly string bossPanel = $"Boss Emergence Panel";
 
     private bool isSpawning = false;
     private bool spawnBoss = false;
@@ -107,7 +107,7 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator SpawnBossCoroutine(int bossIndex)
     {
-        var bossPanel = PopupManager.Instance.AddPopup(bossEmergencePanel);
+        var warningPanel = PopupManager.Instance.AddPopup(bossPanel);
 
         int adjustedIndex = bossIndex;
 
@@ -130,7 +130,7 @@ public class EnemySpawner : MonoBehaviour
         }
 
         yield return new WaitForSeconds(2f);
-        PopupManager.Instance.RemovePopup(bossPanel.name);
+        PopupManager.Instance.RemovePopup(warningPanel.name);
 
         spawnBoss = false;
         yield break;

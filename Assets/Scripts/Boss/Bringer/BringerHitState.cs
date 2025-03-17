@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class BringerHitState : BossAttackState
@@ -40,6 +41,8 @@ public class BringerHitState : BossAttackState
     {
         IsHit = true;
         animator.SetInteger(Animator_ParamName, (int)state);
+
+        controller.StartCoroutine(ResetHitStateCoroutine());
     }
     #endregion
 
@@ -50,9 +53,15 @@ public class BringerHitState : BossAttackState
     }
     #endregion
 
+    private IEnumerator ResetHitStateCoroutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        IsHit = false;
+    }
+
     private void HitBehaviour()
     {
-        if (IsHit || health.GetHealth() < 0) return;
+        if (health.GetHealth() < 0) return;
 
         if (controller.GetPlayerDistance() <= attackDistance)
         {
