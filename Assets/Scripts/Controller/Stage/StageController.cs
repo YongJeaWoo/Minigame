@@ -21,8 +21,6 @@ public class StageController : MonoBehaviour
 
     private void Start()
     {
-        SetStageEnter();
-
         if (!PlayerManager.Instance.GetTutorials()[1])  
         {
             StartCoroutine(StartSecondTutorial());
@@ -59,6 +57,7 @@ public class StageController : MonoBehaviour
 
     private void StageStart()
     {
+        SetStageEnter();
         EventRegister(true);
         StartCoroutine(WaitSpawnEnemiesCoroutine());
     }
@@ -109,7 +108,11 @@ public class StageController : MonoBehaviour
 
     private void LevelUpPopup()
     {
-        AudioManager.Instance.PlaySFX(levelUpClip);
+        if (levelUpClip != null)
+        {
+            AudioManager.Instance.PlaySFX(levelUpClip);
+        }
+
         PopupManager.Instance.AddPopup(Levelup);
     }
 

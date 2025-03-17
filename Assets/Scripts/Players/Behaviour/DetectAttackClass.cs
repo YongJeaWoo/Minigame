@@ -32,7 +32,6 @@ public abstract class DetectAttackClass : MonoBehaviour
 
     protected virtual void Update()
     {
-        Debug.Log($"Attack {attackPoint}");
         DetectTargets();
     }
 
@@ -58,8 +57,6 @@ public abstract class DetectAttackClass : MonoBehaviour
         attackPoint = baseAttackPoint + upgradeAttackPoint;
         attackDelay = baseAttackDelay - upgradeAttackDelay;
         attackRange = baseAttackRange + upgradeAttackRange;
-
-        Debug.Log($"플레이어의 초기 스탯 - 공격력: {attackPoint}, 공격 딜레이: {attackDelay}, 공격 범위: {attackRange}");
     }
 
     protected virtual void DetectTargets()
