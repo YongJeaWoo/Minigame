@@ -3,6 +3,7 @@ using UnityEngine;
 public class CoinItem : MonoBehaviour, IItemBehaviour
 {
     private int amount;
+    [SerializeField] private AudioClip getItemClip;
 
     private void OnEnable()
     {
@@ -16,6 +17,7 @@ public class CoinItem : MonoBehaviour, IItemBehaviour
 
     public void OnBehaviour(GameObject collector)
     {
+        AudioManager.Instance.PlaySFX(getItemClip);
         PlayerManager.Instance.UpdateCoin(amount);
     }
 }

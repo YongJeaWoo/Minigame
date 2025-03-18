@@ -8,7 +8,6 @@ public class LateralAttack : DetectAttackClass
     private List<Collider2D> rightTargets = new List<Collider2D>();
 
     [SerializeField] private float detectionWidth = 5f;
-    [SerializeField] private float detectionHeight = 5f;
 
     protected override void InitValue()
     {
@@ -45,9 +44,9 @@ public class LateralAttack : DetectAttackClass
 
         foreach (var hit in hits)
         {
-            if (Mathf.Abs(hit.point.y - transform.position.y) <= detectionHeight)
+            if (Mathf.Abs(hit.point.y - transform.position.y) <= detectionWidth)
             {
-                HealthParent targetHealth = hit.collider.GetComponent<HealthParent>();
+                IHit targetHealth = hit.collider.GetComponent<IHit>();
                 if (targetHealth != null && !targetHealth.GetIsDead())
                 {
                     targetList.Add(hit.collider);
@@ -98,6 +97,7 @@ public class LateralAttack : DetectAttackClass
 
         if (target.TryGetComponent<IHit>(out var health))
         {
+            AudioManager.Instance.PlaySFX(attackSoundClip);
             health.TakeDamage(attackPoint);
         }
     }

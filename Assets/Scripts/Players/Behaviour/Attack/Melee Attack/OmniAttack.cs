@@ -49,6 +49,7 @@ public class OmniAttack : DetectAttackClass
 
                 if (target.TryGetComponent<IHit>(out var health))
                 {
+                    AudioManager.Instance.PlaySFX(attackSoundClip);
                     health.TakeDamage(attackPoint);
                 }
             }

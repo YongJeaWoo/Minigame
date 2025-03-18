@@ -53,6 +53,7 @@ public class DirectionAttack : DetectAttackClass
             if (attackObject.TryGetComponent<IRangeObject>(out var attackScript))
             {
                 attackScript.InitDirection(attackDirection, this);
+                AudioManager.Instance.PlaySFX(attackSoundClip);
             }
 
             lastAttackTime = Time.time;

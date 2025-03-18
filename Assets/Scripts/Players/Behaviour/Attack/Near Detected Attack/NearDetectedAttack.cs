@@ -35,6 +35,7 @@ public class NearDetectedAttack : DirectionAttack
             {
                 Vector2 attackDirection = (closestTarget.transform.position - spawnPosition).normalized;
                 attackScript.InitDirection(attackDirection, this);
+                AudioManager.Instance.PlaySFX(attackSoundClip);
             }
 
             lastAttackTime = Time.time;
