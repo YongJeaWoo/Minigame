@@ -108,6 +108,7 @@ public class EnemySpawner : MonoBehaviour
     private IEnumerator SpawnBossCoroutine(int bossIndex)
     {
         var warningPanel = PopupManager.Instance.AddPopup(bossPanel);
+        GameObject bossObj;
 
         int adjustedIndex = bossIndex;
 
@@ -122,7 +123,8 @@ public class EnemySpawner : MonoBehaviour
         Transform randomSpawn = GetRandomSpawnLocationWithinBounds(new List<Transform>(spawnsPos));
         if (randomSpawn != null)
         {
-            ObjectPoolManager.Instance.GetFromPool(bossPrefab, randomSpawn);
+            bossObj = ObjectPoolManager.Instance.GetFromPool(bossPrefab, randomSpawn);
+            StageManager.Instance.bossHealth = bossObj.GetComponent<BossHealthParent>();
         }
         else
         {

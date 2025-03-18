@@ -50,6 +50,15 @@ public class UpgradePanel : MonoBehaviour
         PressKey();
     }
 
+    private void OnDestroy()
+    {
+        var player = PlayerManager.Instance.GetPlayer();
+        var detectClass = player.GetComponent<DetectAttackClass>();
+
+        Debug.Log($"현재 플레이어 데이터 : {upgradeData}\n 해당 업그레이드 레벨 {LevelDataManager.Instance.GetLevel(upgradeData)}\n " +
+            $"플레이어 수치 : {detectClass.GetAttackPoint()}");
+    }
+
     private void PressKey()
     {
         if (Input.GetKeyDown(pressKeyCode))

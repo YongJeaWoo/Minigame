@@ -1,50 +1,43 @@
-using System.Collections;
 using UnityEngine;
 
 public class BringerAttackState : BossAttackState
 {
-    private bool isMissing;
-
-    private Coroutine missing_coroutine;
-
     #region FSM State
     public override void EnterState(BossFSMController.E_State state)
     {
-        isMissing = false;
         animator.SetInteger(Animator_ParamName, (int)state);
     }
 
     public override void ExitState()
     {
-        isMissing = true;
+        
     }
 
     public override void UpdateState()
     {
-        AttackBehaviour();
+        
     }
     #endregion
 
-    private void AttackBehaviour()
+    public void AttackBehaviour()
     {
         if (controller.GetPlayerDistance() > attackDistance)
         {
-            missing_coroutine = StartCoroutine(MissingPlayer());
-            return;
+            int randomValue = Random.Range(0, 2);
+
+            switch (randomValue)
+            {
+                case 0:
+                    {
+                        controller.TransitionToState(BossFSMController.E_State.Idle);
+                    }
+                    break;
+                case 1:
+                    {
+                        controller.TransitionToState(BossFSMController.E_State.SpecialAttack);
+                    }
+                    break;
+            }
         }
-    }
-
-    private IEnumerator MissingPlayer()
-    {
-        var attackState = animator.GetCurrentAnimatorStateInfo(0);
-
-        while (attackState.normalizedTime < 1.0f)
-        {
-            attackState = animator.GetCurrentAnimatorStateInfo(0);
-            yield return null;
-        }
-
-        controller.TransitionToState(BossFSMController.E_State.Idle);
-        yield break;
     }
 }

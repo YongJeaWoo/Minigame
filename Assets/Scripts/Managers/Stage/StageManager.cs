@@ -35,6 +35,7 @@ public class StageManager : MonoBehaviour
     [Header("현재 데이터 확인용")]
     [SerializeField] private StageData currentData;
 
+    [HideInInspector] public BossHealthParent bossHealth;
     private PlayerHealth playerHealth;
 
     private float remainingTimer;
@@ -57,7 +58,7 @@ public class StageManager : MonoBehaviour
 
     private void DoAwake()
     {
-        fadeClass =GetComponent<FadeClass>();
+        fadeClass = GetComponent<FadeClass>();
     }
 
     public void StageStart()
@@ -82,6 +83,15 @@ public class StageManager : MonoBehaviour
             {
                 OnPlayerDeadEnd();
                 yield break;
+            }
+
+            if (bossHealth != null)
+            {
+                if (bossHealth.GetIsDead() == true)
+                {
+                    OnTimerEnd();
+                    yield break;
+                }
             }
 
             remainingTimer = Mathf.Max(endTime - Time.time, 0);
@@ -142,7 +152,10 @@ public class StageManager : MonoBehaviour
             anyInputPanel.SetInfoText($"게임을 클리어 했습니다.", $"적을 잡은 수 : <color=#F0E6C2>{enemyDeadCount}</color>", true);
         }
 
-        PlayerManager.Instance.SaveCoin();
+        if (bossHealth.GetIsDead() == true)
+        {
+            PlayerManager.Instance.SaveCoin();
+        }
     }
 
     private void UpdateTimer()
